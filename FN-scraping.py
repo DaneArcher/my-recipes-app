@@ -6,8 +6,11 @@ spagattie_and_meatballs = "https://www.foodnetwork.com/recipes/rachael-ray/spagh
 
 result = requests.get(food_network_recipe_address)
 src = result.content #extracting the html code
-
 soup = BeautifulSoup(src, 'html.parser')
+
+result = requests.get(spagattie_and_meatballs)
+src = result.content #extracting the html code
+pasta = BeautifulSoup(src, 'html.parser')
 
 #temp = soup.find_all("p", class_="o-Ingredients__a-Ingredient")
 
@@ -18,31 +21,28 @@ def parser(tag, class_name, my_soup):
         resource_list.append(i.get_text())
     return resource_list
 
-#o-Ingredients__a-SubHeadline
-sub_section = []
-list_Ingredients = []
-sub_section = parser("h6","o-Ingredients__a-SubHeadline", soup)
+def main(my_soup):
+    sub_section = []
+    list_Ingredients  = []
+    list_Directions = []
 
-if(len(sub_section) != 0):
-    for section in sub_section:
-        text = section.get_text()
-        list_Ingredients.append(text + " (sub)")
-        temp = parser("p","o-Ingredients__a-Ingredient",section)       
+    sub_section = parser("h6","o-Ingredients__a-SubHeadline", my_soup)
 
-list_Ingredients = parser("h6","o-Ingredients__a-SubHeadline", soup)
-print("INGREDIENTS")
-
-    print("nope")
-print(list_Ingredients)
-# for i in list_Ingredients:
-#     print(i)
-print("")
-print("DIRECTIONS")
-list_Directions = parser("li","o-Method__m-Step", soup)
-#print(list_Directions)
-for i in list_Directions:
-    print(i)
-
-
-
+    if(len(sub_section) != 0):
+        #do more stuff
+        pass
     
+    else:
+        list_Ingredients = parser("p", "o-Ingredients__a-Ingredient", my_soup)
+
+    print("INGREDIENTS")
+    for ingredients in list_Ingredients:
+        print(ingredients)
+    print("")
+
+    print("DIRECTIONS")
+    list_Directions = parser("li","o-Method__m-Step", soup)
+    for i in list_Directions:
+        print(i)
+
+main(soup)    
