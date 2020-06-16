@@ -11,7 +11,7 @@ soup = BeautifulSoup(src, 'html.parser')
 result = requests.get(spagattie_and_meatballs)
 src = result.content #extracting the html code
 pasta = BeautifulSoup(src, 'html.parser')
-
+#"o-Ingredients__m-Body"
 #temp = soup.find_all("p", class_="o-Ingredients__a-Ingredient")
 
 def parser(tag, class_name, my_soup):
