@@ -92,7 +92,11 @@ print(get_title(pasta))
 def get_info(my_soup):
     recipe_info = parser_html("div", "o-RecipeInfo", my_soup) #getting all the diffrent info in src 
     #now i will split it up 
-    level = parser_text("span", "o-RecipeInfo__a-Description", recipe_info[0])
-    print(level)
+    info_name = parser_text("span", "o-RecipeInfo__a-Headline", recipe_info[0])
+    print(info_name)
+    info = parser_text("span", "o-RecipeInfo__a-Description", recipe_info[0])
+    print(info)
+    #need to add check to see what info we actually got not all food network recipies have a complete info section
+    #and some info have a different class name.... wierd that they don't conform
 
 get_info(pasta)
