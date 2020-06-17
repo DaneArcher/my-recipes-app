@@ -81,4 +81,18 @@ def main(my_soup):
         print(i)
     """
 
-main(pasta)    
+#main(pasta)  
+
+def get_title(my_soup):
+    title = parser_text("span", "o-AssetTitle__a-HeadlineText", my_soup)
+    return title[0] #i actually get two spaghetti and meat balls titles
+
+print(get_title(pasta))
+
+def get_info(my_soup):
+    recipe_info = parser_html("div", "o-RecipeInfo", my_soup) #getting all the diffrent info in src 
+    #now i will split it up 
+    level = parser_text("span", "o-RecipeInfo__a-Description", recipe_info[0])
+    print(level)
+
+get_info(pasta)
