@@ -34,7 +34,7 @@ def main(my_soup):
 
     
     ingredients = parser_html("div", "o-Ingredients__m-Body", my_soup)
-    print(ingredients[0])
+    print(type(ingredients))
     """
     overAll_Ingredients = parser_text("p", "o-Ingredients__a-Ingredient", ingredients[0]) #list of one soup
     #ingredient_list = parser("p", "o-Ingredients__a-Ingredient", my_soup)
@@ -85,9 +85,10 @@ def main(my_soup):
 
 def get_title(my_soup):
     title = parser_text("span", "o-AssetTitle__a-HeadlineText", my_soup)
+
     return title[0] #i actually get two spaghetti and meat balls titles
 
-print(get_title(pasta))
+#print(get_title(pasta))
 
 def get_info(my_soup):
     recipe_info = parser_html("div", "o-RecipeInfo", my_soup) #getting all the diffrent info in src 
@@ -98,5 +99,36 @@ def get_info(my_soup):
     print(info)
     #need to add check to see what info we actually got not all food network recipies have a complete info section
     #and some info have a different class name.... wierd that they don't conform
+    # https://www.foodnetwork.com/recipes/food-network-kitchen/grilled-cheese-sandwiches-recipe-2117893
 
-get_info(pasta)
+#get_info(pasta)
+
+def get_ingredents(my_soup):
+    ingredient_list = []
+    isHTag = []
+    #ingredients = parser_html("div", "o-Ingredients__m-Body", my_soup)
+    ingredients = my_soup.find_all("div", class_="o-Ingredients__m-Body")
+    print(len(ingredients[0]))
+    # The following for loop is for identifying the text from the tags and checking
+    # NavigableString is of size 1. Trying to only look at information from the Tag Object, NavigableString
+    for i in ingredients[0]:
+        if (str(type(i)) == "<class 'bs4.element.NavigableString'>"): 
+            continue
+        else:
+            # print(type(i))
+            # print(len(str(i)))
+            # print("---------------------------------------")
+            ingredient_list.append(str(i.string))
+            string = str(i)
+            if(string[0:3] == "<h6"):
+                isHTag.append(1)
+            else:
+                isHTag.append(0)
+    count = 0
+    for element in ingredient_list:
+        print(element), print(" "), print(isHTag[count])
+        count = count + 1
+
+get_ingredents(pasta)
+    
+    
