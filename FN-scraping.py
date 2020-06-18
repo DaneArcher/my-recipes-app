@@ -26,69 +26,10 @@ def parser_html(tag, class_name, my_soup):
     resource_list = my_soup.find_all(tag, class_=class_name)
     return resource_list
 
-def main(my_soup):
-    sub_section = []
-    list_Ingredients  = []
-    list_Directions = []
-    h6_ingredients = []
-
-    
-    ingredients = parser_html("div", "o-Ingredients__m-Body", my_soup)
-    print(type(ingredients))
-    """
-    overAll_Ingredients = parser_text("p", "o-Ingredients__a-Ingredient", ingredients[0]) #list of one soup
-    #ingredient_list = parser("p", "o-Ingredients__a-Ingredient", my_soup)
-    sub_section = parser_html("h6","o-Ingredients__a-SubHeadline", my_soup)
-    print((sub_section[0]))
-    #print(sub_section)
-    print("=========================================================================")
-    """
-    
-    # if (len(sub_section) != 0):    
-    #     for element in sub_section:
-    #         tempList = parser_text("p", "o-Ingredients__a-Ingredient", element) #list of one soup
-    #         for i in tempList:
-    #             print(i)
-    #             h6_ingredients.append(i)
-    #     print(h6_ingredients)
-    
-    tempList = parser_text("p", "o-Ingredients__a-Ingredient", sub_section[0]) #list of one soup
-    print(tempList)
-
-
-    #print("----------------")
-    #print(ingredient_list)
-    #print('=================')
-    #print(sub_section)
-
-    #sub_section = parser("h6","o-Ingredients__a-SubHeadline", my_soup)
-"""
-    if(len(sub_section) != 0):
-        #do more stuff
-        pass
-    
-    else:
-        list_Ingredients = parser("p", "o-Ingredients__a-Ingredient", my_soup)
-
-    print("INGREDIENTS")
-    for ingredients in list_Ingredients:
-        print(ingredients)
-    print("")
-
-    print("DIRECTIONS")
-    list_Directions = parser("li","o-Method__m-Step", soup)
-    for i in list_Directions:
-        print(i)
-    """
-
-#main(pasta)  
-
 def get_title(my_soup):
     title = parser_text("span", "o-AssetTitle__a-HeadlineText", my_soup)
 
     return title[0] #i actually get two spaghetti and meat balls titles
-
-#print(get_title(pasta))
 
 def get_info(my_soup):
     recipe_info = parser_html("div", "o-RecipeInfo", my_soup) #getting all the diffrent info in src 
@@ -100,8 +41,6 @@ def get_info(my_soup):
     #need to add check to see what info we actually got not all food network recipies have a complete info section
     #and some info have a different class name.... wierd that they don't conform
     # https://www.foodnetwork.com/recipes/food-network-kitchen/grilled-cheese-sandwiches-recipe-2117893
-
-#get_info(pasta)
 
 def get_ingredents(my_soup):
     ingredient_list = []
@@ -129,6 +68,29 @@ def get_ingredents(my_soup):
         print(element), print(" "), print(isHTag[count])
         count = count + 1
 
-get_ingredents(pasta)
-    
-    
+
+
+def get_directions(my_soup):
+    list_Directions = parser_text("li","o-Method__m-Step", my_soup)
+    for i in list_Directions:
+        print(i)
+
+
+def main(my_soup):
+    print("TITLE")
+    print(get_title(my_soup))
+    print()
+
+    print("INFO")
+    get_info(my_soup)
+    print()
+
+    print("INGREDENTS")
+    get_ingredents(my_soup)
+    print()
+
+    print("DIRECTIONS")
+    get_directions(my_soup)
+
+
+main(pasta)     
