@@ -65,7 +65,8 @@ def get_ingredents(my_soup):
                 isHTag.append(0)
     count = 0
     for element in ingredient_list:
-        print(element), print(" "), print(isHTag[count])
+        print(f"{element}:{isHTag[count]}")
+        #print(element), print(" "), print(isHTag[count])
         count = count + 1
 
 
