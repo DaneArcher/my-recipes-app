@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Form, Input, Button, Icon } from 'semantic-ui-react';
+import { Form, Input, Button, Icon, Label} from 'semantic-ui-react';
 import DisplayRecipe from './add_recipe_comp/display_recipe.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
 
@@ -39,10 +39,6 @@ class SearchRecipe extends Component{
             ingredients: ingredients
         })
         //keeping ingredient_tags parellel w/ ingredients
-        let ingredient_tags = [...this.state.ingredient_tags, '']
-        this.setState({
-            ingredient_tags
-		  })
 		  //setState() is asynch
         //console.log(this.state.ingredients)
         //console.log(this.state.ingredient_tags)
@@ -169,7 +165,7 @@ class SearchRecipe extends Component{
 							<p>Here are you results based on the follwing search term(s)</p>
 							{this.state.ingredients.map((item, index) => (
 								<div key={index}>
-									<Input label={item}  value={this.state.ingredient_tags[index]}/>
+									<Label>{item}</Label>
 								</div>
 							))}
 							<Button onClick={this.previousSection}>Previous</Button>

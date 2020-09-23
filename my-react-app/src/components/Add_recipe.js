@@ -33,8 +33,9 @@ class AddRecipe extends Component{
         ingredients: [],
         ingredient_tags: [],
         directions: '',
-		  chef_notes: '',
-		  step: 1
+		chef_notes: '',
+		step: 0,
+		url: 'https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756'
     }
     handleChange = (input) => e =>{
         this.setState({[input]: e.target.value})
@@ -89,20 +90,54 @@ class AddRecipe extends Component{
 		console.log(this.state.ingredients)
 		console.log(this.state.ingredient_tags)
 	 }
+	 scrape = () =>{
+		let link = 'scrape_recipes?link='
+		const {url} = this.state
+		link = link.concat(url)
+		 //console.log(link)
+		 //https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756
+
+		fetch(link)
+		.then(response => response.json())
+		.then(data => {
+			console.log(data)
+			this.setState({
+				directions: data.directions,
+				title: data.title,
+				ingredients: data.ingredients[0]
+			})
+			//.then(()=>{this.nextSection()})
+			this.nextSection()
+		})
+	 }
 
     render(){
-        const {step} = this.state
+		const {step} = this.state
         switch(step){
+			case 0:
+				return(
+					<div>
+						<Form>
+							<Form.Input placeholder='URL' onChange = {this.handleChange('url')} value = {this.state.url}/>
+							<Button.Group>
+								<Button onClick = {this.scrape}>Scrape</Button>
+								<Button.Or />
+								<Button onClick = {this.nextSection}>Skip</Button>
+							</Button.Group>
+						</Form>
+					</div>
+				)
             case 1:
 					return(
 						<div>
 							 <h1>Testing</h1>
 							 <Form>
-								  <Form.Field width={3}> 
+								  <Form.Field width={5}> 
 										<label>Title</label>
 										<Input
 											 placeholder='Title'
 											 onChange = {this.handleChange('title')}
+											 value = {this.state.title}
 										/>                        
 								  </Form.Field>
 								  <Form.Field> 
@@ -176,37 +211,45 @@ class AddRecipe extends Component{
 								  <DisplayRecipe ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
 								<Form>
 								  <AddIngredient addIngredient={this.addIngredient}/>
-								  <Form.TextArea label='Directions' onChange = {this.handleChange('directions')} rows="8" placeholder='Start by...'/>
+								  <Form.TextArea label='Directions' onChange = {this.handleChange('directions')} rows="8" placeholder='Start by...' value={this.state.directions}/>
 								  <Form.TextArea label='Chef Notes' onChange = {this.handleChange('chef_notes')} rows="3" placeholder='Simmer for 10 minutes instead of 5 iminutes'/>
-								  <Button onClick = {this.nextSection} animated>
-										<Button.Content visible>Next</Button.Content>
-										<Button.Content hidden>
-											 <Icon name = 'arrow right'/>
-										</Button.Content>
-								  </Button>
+								<Button.Group>
+									<Button onClick ={this.previousSection}>Previous</Button>
+									<Button.Or/>
+									<Button onClick = {this.nextSection} animated>
+											<Button.Content visible>Next</Button.Content>
+											<Button.Content hidden>
+												<Icon name = 'arrow right'/>
+											</Button.Content>
+									</Button>
+								</Button.Group>
 							 </Form>
 						</div>
 				  )
-				case 2:
-					return(
-						<div>
-							<p>In step 2</p>
-							{this.state.ingredients.map((item, index) => (
-								<div key={index}>
-									<Input label={item} onChange={this.parsedIngr(index)} value={this.state.ingredient_tags[index]}/>
-								</div>
-							))}
+			case 2:
+				return(
+					<div>
+						<p>In step 2</p>
+						{this.state.ingredients.map((item, index) => (
+							<div key={index}>
+								<Input label={item} onChange={this.parsedIngr(index)} value={this.state.ingredient_tags[index]}/>
+							</div>
+						))}
+						<Button.Group>
 							<Button onClick={this.previousSection}>Previous</Button>
-						</div>
-						
-					)
-				default:
-					//https://eslint.org/docs/rules/default-case
-					return(
-						
-						<p>In default case COME BACK TO THIS AND LEARN MORE</p>
-					)
-                
+							<Button.Or/>
+							<Button>Submit</Button>
+						</Button.Group>
+					</div>
+					
+				)
+			default:
+				//https://eslint.org/docs/rules/default-case
+				return(
+					
+					<p>In default case COME BACK TO THIS AND LEARN MORE</p>
+				)
+			
         }
 
     }
