@@ -20,7 +20,7 @@ def add_recipes():
     return "response is good"
 @app.route('/search', methods=['GET'])
 def search():
-    list_of_recipes=[]
+    #list_of_recipes=[]
     ingredients = request.args.get("ingredients")
     title = request.args.get("title")
     #get list of recipes from db
