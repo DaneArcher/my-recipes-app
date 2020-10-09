@@ -2,22 +2,7 @@ import React, {Component} from 'react';
 import { Form, Input, Button, Icon } from 'semantic-ui-react';
 import DisplayRecipe from './add_recipe_comp/display_recipe.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
-/*
-TODO: 
-	--check to see if user added title, ingredients, and directions before moving on (required fields)
-	--handle deleting ingredents and how that effects ingredents_tags
-	--in case of a user is switching between the add recipe pg and the parsing page make sure not to redue or over write work
-	--in case user returns to add recipe pg to change ingredents make sure that the equivalent paring tab is updated
-	--parsed ingredets by user make sure their are no spaces in front or and the end and any bad characters withing the parsted ingredents i.e. numbers and symbols
-	--check for duplicates ingredents and parsed ingredents
-	--check for strings of blank spaces  
-	--if user is edeting ingredents in a subminted recipe make sure that recipe is removed from old ingredent_tag
-	--delete button
-	--previous button
-	--option between adding recipie by hand and link
-	--multiple ingredent_tags for one ingredent
-	--recipe type check boxes i.e lunch, desert, drinks....
-*/
+
 class AddRecipe extends Component{
     state = {
         title: '',
@@ -41,23 +26,18 @@ class AddRecipe extends Component{
         this.setState({[input]: e.target.value})
     }
     nextSection = () =>{
-        //console.log('button worked')
-		  //console.log(e.target[0].value)
 		  const {step} = this.state
 		  this.setState({
 			  step: step + 1
 		  })
 	 }
 	 previousSection = () =>{
-		//console.log('button worked')
-		//console.log(e.target[0].value)
 		const {step} = this.state
 		this.setState({
 			step: step - 1
 		})
   }
     addIngredient = (ingredient) =>{
-        //console.log(ingredient)
         let ingredients = [...this.state.ingredients, ingredient];
         this.setState({
             ingredients: ingredients
@@ -67,9 +47,6 @@ class AddRecipe extends Component{
         this.setState({
             ingredient_tags
 		  })
-		  //setState() is asynch
-        //console.log(this.state.ingredients)
-        //console.log(this.state.ingredient_tags)
 	 }
 	 deletIngredient = (index) =>{
 		 let {ingredients, ingredient_tags} = this.state
@@ -87,28 +64,49 @@ class AddRecipe extends Component{
 		this.setState({
 			ingredient_tags
 		})
-		console.log(this.state.ingredients)
-		console.log(this.state.ingredient_tags)
+		//console.log(this.state.ingredients)
+		//console.log(this.state.ingredient_tags)
 	 }
 	 scrape = () =>{
-		let link = 'scrape_recipes?link='
+		let link = '/scrape_recipes?link='
 		const {url} = this.state
 		link = link.concat(url)
-		 //console.log(link)
 		 //https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756
 
 		fetch(link)
 		.then(response => response.json())
 		.then(data => {
-			console.log(data)
+			//console.log(data)
 			this.setState({
 				directions: data.directions,
 				title: data.title,
 				ingredients: data.ingredients[0]
 			})
+			//keeping ingredient tags same length as ingredients
+			let len = data.ingredients[0].length
+			for(let i = 0; i < len; i++){
+				let ingredient_tags = [...this.state.ingredient_tags, '']
+				this.setState({
+					ingredient_tags
+				  })
+			}
 			//.then(()=>{this.nextSection()})
 			this.nextSection()
 		})
+	 }
+	 submitRecipe = () =>{
+		 let copyState = {}
+		 Object.assign(copyState, this.state)
+		 delete copyState["step"];
+
+		 fetch('/add_recipes', {
+		   method: 'POST', // or 'PUT'
+		   headers: {
+			 'Content-Type': 'application/json',
+		   },
+		   body: JSON.stringify(copyState),
+		 }).then(response => response.text())
+		 .then(text => {console.log(text)})		 
 	 }
 
     render(){
@@ -238,7 +236,7 @@ class AddRecipe extends Component{
 						<Button.Group>
 							<Button onClick={this.previousSection}>Previous</Button>
 							<Button.Or/>
-							<Button>Submit</Button>
+							<Button onClick={this.submitRecipe}>Submit</Button>
 						</Button.Group>
 					</div>
 					

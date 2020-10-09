@@ -1,14 +1,15 @@
 import React, {Component} from 'react';
-import { Form, Input, Button, Icon, Label} from 'semantic-ui-react';
+import { Form, Input, Button, Icon, Label, Card} from 'semantic-ui-react';
 import DisplayRecipe from './add_recipe_comp/display_recipe.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
 
 class SearchRecipe extends Component{
     state = {
-        title: '',
+        title: 'tempTitle',
         ingredients: [],
         ingredient_tags: [],
-		step: 1
+		step: 1,
+		recipe_list: ['title12345678901234567890hellomynameisDane','title2','title3']
     }
     handleChange = (input) => e =>{
         this.setState({[input]: e.target.value})
@@ -17,6 +18,7 @@ class SearchRecipe extends Component{
 	 nextSection = () =>{
         //console.log('button worked')
 		  //console.log(e.target[0].value)
+		  this.get_recipes()
 		  const {step} = this.state
 		  this.setState({
 			  step: step + 1
@@ -28,9 +30,56 @@ class SearchRecipe extends Component{
 		const {step} = this.state
 		this.setState({
 			step: step - 1
-		})
-	
-  }
+		})	
+	  }
+	get_recipes = () =>{
+		// don't need to search the db if valuse are already there
+		// unless they change the search parameters then you need to search
+		// TODO: check if they change the search parmeters
+		//step 1 is search by title step 3 is search by ingredient
+		let {recipe_list, title, ingredients, step} = this.state
+		if (recipe_list.length !== 0){
+			if (step === 1){
+				let link = '/search?title='
+				link = link.concat(title)
+
+				fetch(link)
+				.then(response => response.json())
+				.then(data => {
+					console.log(data)
+					//check if this is the right way to swap lists?
+					/*
+					this.setState({
+						recipe_list: data.recipes
+					})*/
+					//this.nextSection()
+				})
+			}
+			else{
+				//step == 3
+				let link = '/search?ingredients='
+				let ingredient_str = ''
+				for(let i = 0; i < ingredients.length; i++){
+					ingredient_str = ingredient_str.concat(ingredients[i], ',')
+				}
+				ingredient_str = ingredient_str.slice(0, -1)
+				link = link.concat(ingredient_str)
+				
+				fetch(link)
+				.then(response => response.json())
+				.then(data => {
+					console.log(data)
+					//check if this is the right way to swap lists?
+					/*
+					this.setState({
+						recipe_list: data.recipes
+					})*/
+					//this.nextSection()
+				})
+
+			}
+		} 
+	}
 
     addIngredient = (ingredient) =>{
         //console.log(ingredient)
@@ -114,71 +163,89 @@ class SearchRecipe extends Component{
 							</Form>
 						</div>
 				  )
-				case 2:
-					return(
-						<div>
-							<p>Here are you results based on the follwing search term(s)</p>
+			case 2:
+				return(
+					<div>
+						<p>Here are you results based on the follwing search term(s)</p>
+						
 							
-								
-							<Input value={this.state.title}/>
-								
+						<Input value={this.state.title}/>
+						{this.state.recipe_list.map((item,index) => (
+							<div key={index}>
+								<Card>
+									<Card.Content>
+										<Card.Header>{item}</Card.Header>
+									</Card.Content>
+								</Card>
+							</div>
+						))}
 							
-							<Button onClick={this.previousSection}>Previous</Button>
-						</div>
 						
-					)
-				case 3:
-					return(
-						<div>
-							 <h1>Recipe Search</h1>
-							 <div>
-								<div>
-									<label>
-									Search by Ingredients&nbsp;&nbsp;&nbsp;
-										<input type="radio" value = "Search by Ingredient" checked={true} name="searchType"/> 
-									</label>
-								</div>
-									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<div onChange={this.switchtype1}>
-									<label>
-									Search by Recipe Name&nbsp;&nbsp;&nbsp;
-										<input type="radio" value = "Search by Recipe Name" name="searchType"/> 
-									</label>
-									
-								</div>
-							 </div>
-								<DisplayRecipe ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
-								<Form>
-									<AddIngredient addIngredient={this.addIngredient}/>
-									<Button onClick = {this.nextSection} animated>
-											<Button.Content visible>Next</Button.Content>
-											<Button.Content hidden>
-												<Icon name = 'arrow right'/>
-											</Button.Content>
-									</Button>
-							</Form>
-						</div>
-					)
-				case 4:
-					return(
-						<div>
-							<p>Here are you results based on the follwing search term(s)</p>
-							{this.state.ingredients.map((item, index) => (
-								<div key={index}>
-									<Label>{item}</Label>
-								</div>
-							))}
-							<Button onClick={this.previousSection}>Previous</Button>
-						</div>
-						
-					)
-				default:
-					//https://eslint.org/docs/rules/default-case
-					return(
-						
-						<p>In default case COME BACK TO THIS AND LEARN MORE</p>
-					)
-                
+						<Button onClick={this.previousSection}>Previous</Button>
+					</div>
+					
+				)
+			case 3:
+				return(
+					<div>
+							<h1>Recipe Search</h1>
+							<div>
+							<div>
+								<label>
+								Search by Ingredients&nbsp;&nbsp;&nbsp;
+									<input type="radio" value = "Search by Ingredient" checked={true} name="searchType"/> 
+								</label>
+							</div>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<div onChange={this.switchtype1}>
+								<label>
+								Search by Recipe Name&nbsp;&nbsp;&nbsp;
+									<input type="radio" value = "Search by Recipe Name" name="searchType"/> 
+								</label>
+								
+							</div>
+							</div>
+							<DisplayRecipe ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
+							<Form>
+								<AddIngredient addIngredient={this.addIngredient}/>
+								<Button onClick = {this.nextSection} animated>
+										<Button.Content visible>Next</Button.Content>
+										<Button.Content hidden>
+											<Icon name = 'arrow right'/>
+										</Button.Content>
+								</Button>
+						</Form>
+					</div>
+				)
+			case 4:
+				return(
+					<div>
+						<p>Here are you results based on the follwing search term(s)</p>
+						{this.state.ingredients.map((item, index) => (
+							<div key={index}>
+								<Label>{item}</Label>
+							</div>
+						))}
+						{this.state.recipe_list.map((item,index) => (
+							<div key={index}>
+								<Card>
+									<Card.Content>
+										<Card.Header>{item}</Card.Header>
+									</Card.Content>
+								</Card>
+							</div>
+						))}
+						<Button onClick={this.previousSection}>Previous</Button>
+					</div>
+					
+				)
+			default:
+				//https://eslint.org/docs/rules/default-case
+				return(
+					
+					<p>In default case COME BACK TO THIS AND LEARN MORE</p>
+				)
+		
         }
 
     }
