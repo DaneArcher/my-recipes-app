@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form, Input, Button, Icon } from 'semantic-ui-react';
-import DisplayRecipe from './add_recipe_comp/display_recipe.js'
+import DisplayIngredients from './add_recipe_comp/display_ingredients.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
 
 class AddRecipe extends Component{
@@ -206,7 +206,7 @@ class AddRecipe extends Component{
 										</Form.Field>
 								  </Form.Group>
 								</Form>
-								  <DisplayRecipe ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
+								  <DisplayIngredients ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
 								<Form>
 								  <AddIngredient addIngredient={this.addIngredient}/>
 								  <Form.TextArea label='Directions' onChange = {this.handleChange('directions')} rows="8" placeholder='Start by...' value={this.state.directions}/>
@@ -255,3 +255,19 @@ class AddRecipe extends Component{
 }
 
 export default AddRecipe;
+/*
+TODO: 
+	--check to see if user added title, ingredients, and directions before moving on (required fields)
+	--handle deleting ingredents and how that effects ingredents_tags
+	--in case of a user is switching between the add recipe pg and the parsing page make sure not to redue or over write work
+	--in case user returns to add recipe pg to change ingredents make sure that the equivalent paring tab is updated
+	--parsed ingredets by user make sure their are no spaces in front or and the end and any bad characters withing the parsted ingredents i.e. numbers and symbols
+	--check for duplicates ingredents and parsed ingredents
+	--check for strings of blank spaces  
+	--if user is edeting ingredents in a subminted recipe make sure that recipe is removed from old ingredent_tag
+	--delete button
+	--previous button
+	--option between adding recipie by hand and link
+	--multiple ingredent_tags for one ingredent
+	--recipe type check boxes i.e lunch, desert, drinks....
+*/

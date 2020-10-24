@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { Form, Input, Button, Icon, Label, Card} from 'semantic-ui-react';
-import DisplayRecipe from './add_recipe_comp/display_recipe.js'
+import DisplayIngredients from './add_recipe_comp/display_ingredients.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
 
 class SearchRecipe extends Component{
@@ -205,7 +205,7 @@ class SearchRecipe extends Component{
 								
 							</div>
 							</div>
-							<DisplayRecipe ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
+							<DisplayIngredients ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
 							<Form>
 								<AddIngredient addIngredient={this.addIngredient}/>
 								<Button onClick = {this.nextSection} animated>
