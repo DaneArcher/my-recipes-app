@@ -1,6 +1,8 @@
-start
-started
+npm install react-router-dom 
 
-hi im whanos
+https://www.robinwieruch.de/react-semantic-ui-tutorial
 
-this is awsome
+npm install semantic-ui-react
+
+npm install semantic-ui-css
+
