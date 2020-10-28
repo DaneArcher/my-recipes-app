@@ -9,7 +9,11 @@ TODO:
 */
 class DisplayRecipe extends Component{
     state = {
-        recipe: {
+        recipe: null
+    }
+    componentDidMount(){
+        console.log('component did mount')
+        let recipe = {
             title: 'Sun-Dried Romatoes',
             author: 'Cuoredicioccolato',
             src: 'YouTube',
@@ -26,11 +30,20 @@ class DisplayRecipe extends Component{
             chef_notes: 'you can also do them in an oven at 125 f',
             url: 'https://www.youtube.com/watch?v=5yTWGjPdj-g'
         }
-    }
-    componentDidMount(){
-        console.log('component did mount')
+        this.setState({recipe})
         /*
         console.log(this.props.recipe_id)
+        let link = '/get_recipe_by_id?id='
+        let recipe_id = this.props.recipe_id        
+        link = link.concat(recipe_id)
+
+        fetch(link)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            this.setState({
+                recipe: data.recipe
+            })
         */
     }
     check = () =>{
