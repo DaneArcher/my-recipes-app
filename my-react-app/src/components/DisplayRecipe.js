@@ -107,7 +107,10 @@ class DisplayRecipe extends Component{
         packaged_data.push(ingredientsList)
         let url = null
         if (recipe['url'] !== ''){
-            url = <Container textAlign='center'><a href={recipe['url']} target="_blank">{recipe['url']}</a></Container>
+            //rel="noopener noreferrer" is used with target= '_blank' to keep the new window from gaining access
+            //to my index.http target='_blank' opens the link in a new page for more info on this protection and 
+            //risk https://mathiasbynens.github.io/rel-noopener/
+            url = <Container textAlign='center'><a href={recipe['url']} target='_blank' rel="noopener noreferrer">{recipe['url']}</a></Container>
         }
         packaged_data.push(url)
         return(packaged_data)
