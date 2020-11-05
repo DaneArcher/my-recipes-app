@@ -13,12 +13,13 @@ class AddRecipe extends Component{
         prep_time: '',
         cook_time: '',
         rating: '',
-        serving: '',
+        servings: '',
         calories: '',
         ingredients: [],
         ingredient_tags: [],
         directions: '',
 		chef_notes: '',
+		img_link: '',
 		step: 0,
 		url: 'https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756'
     }
@@ -80,10 +81,11 @@ class AddRecipe extends Component{
 			this.setState({
 				directions: data.directions,
 				title: data.title,
-				ingredients: data.ingredients[0]
+				ingredients: data.ingredients,
+				img_link: data.img_link
 			})
 			//keeping ingredient tags same length as ingredients
-			let len = data.ingredients[0].length
+			let len = data.ingredients.length
 			for(let i = 0; i < len; i++){
 				let ingredient_tags = [...this.state.ingredient_tags, '']
 				this.setState({
@@ -191,10 +193,10 @@ class AddRecipe extends Component{
 											 />                        
 										</Form.Field>
 										<Form.Field> 
-											 <label>Serving</label>
+											 <label>Servings</label>
 											 <Input
 												  placeholder='4'
-												  onChange = {this.handleChange('serving')}
+												  onChange = {this.handleChange('servings')}
 											 />                        
 										</Form.Field>
 										<Form.Field> 
