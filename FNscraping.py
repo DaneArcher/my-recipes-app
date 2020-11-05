@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import re
 
 food_network_recipe_address = "https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756"
 spagattie_and_meatballs = "https://www.foodnetwork.com/recipes/rachael-ray/spaghetti-and-meatballs-recipe-1942620"
@@ -7,6 +8,7 @@ spagattie_and_meatballs = "https://www.foodnetwork.com/recipes/rachael-ray/spagh
 def parser_text(tag, class_name, my_soup):
     resource_list = []
     resource = my_soup.find_all(tag, class_=class_name)
+    #print(resource)
     for i in resource:
         resource_list.append(i.get_text())
     return resource_list
@@ -33,22 +35,24 @@ def get_info(my_soup):
 
 def get_ingredents(my_soup):
     ingredient_list = []
-    isHTag = []
-    #ingredients = parser_html("div", "o-Ingredients__m-Body", my_soup)
-    ingredients = my_soup.find_all("div", class_="o-Ingredients__m-Body")
-    # The following for loop is for identifying the text from the tags and checking
-    # NavigableString is of size 1. Trying to only look at information from the Tag Object, NavigableString
-    for i in ingredients[0]:
-        if (str(type(i)) == "<class 'bs4.element.NavigableString'>"): 
-            continue
-        else:
-            ingredient_list.append(str(i.string))
-            string = str(i)
-            if(string[0:3] == "<h6"): #identifying titles and ingredents 1's titiles 0 ingredents
-                isHTag.append(1)
+
+    ingredient_objects = my_soup.find_all(['span','h6'], attrs={"class" : re.compile('^o-Ingredients__a-')})
+    #ingredient_objects = ingredient_objects[4:]
+     # The following for loop is for identifying the text from the tags and checking
+    for i in ingredient_objects:
+        if i.get_text() != "":
+            if str(i)[0:3] == "<h6":
+                string = "Header " + i.get_text().strip()
+                ingredient_list.append(string)
             else:
-                isHTag.append(0)
-    return [ingredient_list, isHTag]
+                ingredient_list.append(i.get_text().strip())
+
+
+   
+    ingredient_list = ingredient_list[2:-2]
+    #ingredient_list = ingredient_list[:-2]
+    print(ingredient_list)
+    return ingredient_list
 
 def get_directions(my_soup):
     list_Directions = parser_text("li","o-Method__m-Step", my_soup)
@@ -56,6 +60,10 @@ def get_directions(my_soup):
     for val in list_Directions:
         directions += val
     return directions
+
+def get_img_link(my_soup):
+    img_link = my_soup.find("meta", {"property":"og:image"})['content']
+    return img_link
 
 def scraper(food_link):
     completed_recipe_info = {}
@@ -68,8 +76,9 @@ def scraper(food_link):
     completed_recipe_info['info'] = get_info(soup)
     completed_recipe_info['ingredients'] = get_ingredents(soup)
     completed_recipe_info['directions'] = get_directions(soup)
+    completed_recipe_info['img_link'] = get_img_link(soup)
     #print(completed_recipe_info)
 
     return completed_recipe_info
 
-scraper(food_network_recipe_address)     
+scraper(spagattie_and_meatballs)
