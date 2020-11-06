@@ -7,10 +7,10 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom'
 
 
 function App() {
-  return(
+  /*return(
     <DisplayRecipe/>
-  )
-  /*
+  )*/
+  
   return (
     <BrowserRouter>
       <div className="App">
@@ -20,7 +20,6 @@ function App() {
       </div>
     </BrowserRouter>
   );
-  */
 }
 
 export default App;
