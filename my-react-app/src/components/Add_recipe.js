@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Form, Input, Button, Icon } from 'semantic-ui-react';
 import DisplayIngredients from './add_recipe_comp/display_ingredients.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
+import {Link} from 'react-router-dom'
 
 class AddRecipe extends Component{
     state = {
@@ -98,6 +99,7 @@ class AddRecipe extends Component{
 	 }
 	 submitRecipe = () =>{
 		 let copyState = {}
+		 let {step} = this.state
 		 Object.assign(copyState, this.state)
 		 delete copyState["step"];
 
@@ -108,7 +110,12 @@ class AddRecipe extends Component{
 		   },
 		   body: JSON.stringify(copyState),
 		 }).then(response => response.text())
-		 .then(text => {console.log(text)})		 
+		 .then(text => {
+			 console.log(text)
+			 if(text === "response is good"){
+				this.setState({step: step + 1})
+			 }
+			})		 
 	 }
 
     render(){
@@ -242,6 +249,13 @@ class AddRecipe extends Component{
 						</Button.Group>
 					</div>
 					
+				)
+			case 3:
+				return(
+					<div>
+						<h1>Your Recipe was successfully sumbinted!</h1>
+						<Button><Link to="/">Return Home</Link></Button>
+					</div>
 				)
 			default:
 				//https://eslint.org/docs/rules/default-case
