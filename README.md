@@ -3,7 +3,7 @@
 ## Index
 
   - Introduction to RecipeBook
-  - How We Built the Project 
+  - https://github.com/DaneArcher/my-recipes-app#introduction
   - Project Dependencies
   - How to Run RecipeBook
   - What We Learned/Experiences
