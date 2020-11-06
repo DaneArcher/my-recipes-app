@@ -1,9 +1,10 @@
 from FNscraping import scraper
 from flask import Flask, jsonify, request
 from CreatePGDB import insert, search_by_ingredients, search_by_title, get_full_recipe
- 
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 @app.route('/')
 def home():
     return 'home page boi'

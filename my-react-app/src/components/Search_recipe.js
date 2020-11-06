@@ -46,7 +46,7 @@ class SearchRecipe extends Component{
 		//REMOVE THE LINE BELOW ONCE UR DONE WITH SCRAPER
 		if (recipe_list.length !== 0){
 			if (step === 1){
-				let link = '/search?title='
+				let link = 'http://localhost:5000/search?title='
 				link = link.concat(title)
 
 				fetch(link)
@@ -64,7 +64,7 @@ class SearchRecipe extends Component{
 			}
 			else{
 				//step == 3
-				let link = '/search?ingredients='
+				let link = 'http://localhost:5000/search?ingredients='
 				let ingredient_str = ''
 				for(let i = 0; i < ingredients.length; i++){
 					ingredient_str = ingredient_str.concat(ingredients[i], ',')

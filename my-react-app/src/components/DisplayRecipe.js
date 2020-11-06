@@ -33,7 +33,7 @@ class DisplayRecipe extends Component{
         // this.setState({recipe})
         
         //console.log(this.props.recipe_id)
-        let link = '/full_recipe?recipe_id='
+        let link = 'http://localhost:5000/full_recipe?recipe_id='
         let recipe_id = this.props.recipe_id        
         link = link.concat(recipe_id)
 

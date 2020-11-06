@@ -70,7 +70,7 @@ class AddRecipe extends Component{
 		//console.log(this.state.ingredient_tags)
 	 }
 	 scrape = () =>{
-		let link = '/scrape_recipes?link='
+		let link = 'http://localhost:5000/scrape_recipes?link='
 		const {url} = this.state
 		link = link.concat(url)
 		 //https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756
@@ -103,7 +103,7 @@ class AddRecipe extends Component{
 		 Object.assign(copyState, this.state)
 		 delete copyState["step"];
 
-		 fetch('/add_recipes', {
+		 fetch('http://localhost:5000/add_recipes', {
 		   method: 'POST', // or 'PUT'
 		   headers: {
 			 'Content-Type': 'application/json',

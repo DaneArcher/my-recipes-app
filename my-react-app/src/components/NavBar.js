@@ -8,7 +8,7 @@ const Navbar = () =>{
 		<Menu>
 			<Menu.Menu  position='right'>
 				<Menu.Item>
-					<Link to="/">Search</Link>
+					<Link to="/">Home</Link>
 				</Menu.Item>
 				<Menu.Item>
 					<Link to="/add">Add</Link>
