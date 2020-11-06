@@ -20,10 +20,6 @@ function App() {
       </div>
     </BrowserRouter>
   );
-<<<<<<< HEAD
-=======
-  
->>>>>>> e552d5d0a14517de8a40f771407068911920aa12
 }
 
 export default App;
