@@ -1,23 +1,30 @@
 from FNscraping import scraper
 from flask import Flask, jsonify, request
+from CreatePGDB import insert, search_by_ingredients, search_by_title, get_full_recipe
  
 
 app = Flask(__name__)
 @app.route('/')
 def home():
-    return 'home page'
+    return 'home page boi'
 @app.route('/scrape_recipes', methods=['GET'])
 def scrape_recipes():
     #extract url https://www.kite.com/python/answers/how-to-get-parameters-from-a-url-using-flask-in-python
     link = request.args.get("link")
+    results = scraper(link)
+    print(results)
+    print(jsonify(results))
     return jsonify(scraper(link))
 
 @app.route('/add_recipes', methods=['POST'])
 def add_recipes():
     recipe_data = request.get_json()
     print(recipe_data)
-    #send to db
-    return "response is good"
+
+    if(insert(recipe_data)):
+        return "response is good"
+    return "responce failed"
+ 
 @app.route('/search', methods=['GET'])
 def search():
     #list_of_recipes=[]
@@ -26,14 +33,32 @@ def search():
     #get list of recipes from db
     if ingredients == None:
         #send title.data and the str title to database
-        print(title)
-        return jsonify({'recipes': title})
+        #return search_by_title(title)
+        result = search_by_title(title)
+        print(result)
+        if result:
+            return jsonify({'recipes': result})
+        return None
     else: #title == None:
         ingredients = ingredients.split(',')
         #send ingredients.data and the string ingredients to db
         print(ingredients)
-        return jsonify({'recipes': ingredients})    
+        result = search_by_ingredients(ingredients)
+        print(result)
+        if result:
+            return jsonify({'recipes': result})
+        return None    
     #return jsonify({'recipes': list_of_recipes})
+
+@app.route('/full_recipe', methods=['GET'])
+def full_recipe():
+    recipe_id = request.args.get("recipe_id")
+    result = get_full_recipe(int(recipe_id))
+    print(result)
+    if result:
+        return jsonify({'recipe': result})
+    return None
+
 @app.route('/test', methods=['GET'])
 def test():
     #/test?temp=1000

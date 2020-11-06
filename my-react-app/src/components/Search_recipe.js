@@ -1,15 +1,18 @@
 import React, {Component} from 'react';
-import { Form, Input, Button, Icon, Label, Card} from 'semantic-ui-react';
+import { Form, Input, Button, Icon, Label, Card, Image} from 'semantic-ui-react';
 import DisplayIngredients from './add_recipe_comp/display_ingredients.js'
 import AddIngredient from './add_recipe_comp/add_ingredients.js'
+import DisplayRecipe from './DisplayRecipe.js'
 
 class SearchRecipe extends Component{
     state = {
-        title: 'tempTitle',
+        title: '',
         ingredients: [],
         ingredient_tags: [],
 		step: 1,
-		recipe_list: ['title12345678901234567890hellomynameisDane','title2','title3']
+		recipe_list: [''],
+		recipe_id: 0,
+		last_step: 0
     }
     handleChange = (input) => e =>{
         this.setState({[input]: e.target.value})
@@ -18,8 +21,10 @@ class SearchRecipe extends Component{
 	 nextSection = () =>{
         //console.log('button worked')
 		  //console.log(e.target[0].value)
-		  this.get_recipes()
 		  const {step} = this.state
+		  if(step === 1 || step === 3){
+			  this.get_recipes()
+		  }	  
 		  this.setState({
 			  step: step + 1
 		  })
@@ -38,6 +43,7 @@ class SearchRecipe extends Component{
 		// TODO: check if they change the search parmeters
 		//step 1 is search by title step 3 is search by ingredient
 		let {recipe_list, title, ingredients, step} = this.state
+		//REMOVE THE LINE BELOW ONCE UR DONE WITH SCRAPER
 		if (recipe_list.length !== 0){
 			if (step === 1){
 				let link = '/search?title='
@@ -48,10 +54,11 @@ class SearchRecipe extends Component{
 				.then(data => {
 					console.log(data)
 					//check if this is the right way to swap lists?
-					/*
+					console.log(this.state)
 					this.setState({
 						recipe_list: data.recipes
-					})*/
+					})
+					console.log(this.state)
 					//this.nextSection()
 				})
 			}
@@ -70,10 +77,10 @@ class SearchRecipe extends Component{
 				.then(data => {
 					console.log(data)
 					//check if this is the right way to swap lists?
-					/*
+					
 					this.setState({
 						recipe_list: data.recipes
-					})*/
+					})
 					//this.nextSection()
 				})
 
@@ -114,6 +121,15 @@ class SearchRecipe extends Component{
 		const {step} = this.state
 		this.setState({
 			step: step - 2
+		})
+	 }
+
+	 showRecipe = (id) =>{
+		 //console.log(id)
+		this.setState({
+			recipe_id: id,
+			last_step: this.state.step,
+			step: 5
 		})
 	 }
 
@@ -172,9 +188,12 @@ class SearchRecipe extends Component{
 						<Input value={this.state.title}/>
 						{this.state.recipe_list.map((item,index) => (
 							<div key={index}>
-								<Card>
+								<Card onClick={() => {this.showRecipe(item['recipe_id'])}}>
+									<Image src= {item['img_link']} wrapped ui={false} />
 									<Card.Content>
-										<Card.Header>{item}</Card.Header>
+										<Card.Header>{item['title']}</Card.Header>
+										<Card.Meta>Total Time: {item['total_time']}</Card.Meta>
+										<Card.Meta>Rating: {item['rating']}</Card.Meta>
 									</Card.Content>
 								</Card>
 							</div>
@@ -228,9 +247,12 @@ class SearchRecipe extends Component{
 						))}
 						{this.state.recipe_list.map((item,index) => (
 							<div key={index}>
-								<Card>
+								<Card onClick={() => {this.showRecipe(item['recipe_id'])}}>
+									<Image src= {item['img_link']} wrapped ui={false} />
 									<Card.Content>
-										<Card.Header>{item}</Card.Header>
+										<Card.Header>{item['title']}</Card.Header>
+										<Card.Meta>Total Time: {item['total_time']}</Card.Meta>
+										<Card.Meta>Rating: {item['rating']}</Card.Meta>
 									</Card.Content>
 								</Card>
 							</div>
@@ -239,6 +261,13 @@ class SearchRecipe extends Component{
 					</div>
 					
 				)
+			case 5:
+				return(
+					<div>
+						<DisplayRecipe recipe_id={this.state.recipe_id}/>
+						<Button onClick={() => {this.setState({step: this.state.last_step}) }}>Previous</Button>
+					</div>			
+					)
 			default:
 				//https://eslint.org/docs/rules/default-case
 				return(
