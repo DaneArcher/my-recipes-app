@@ -4,17 +4,11 @@
 
   - [Introduction to RecipeBook](https://github.com/DaneArcher/my-recipes-app#introduction)
   - [How We Built the Project](https://github.com/DaneArcher/my-recipes-app#how-we-built-the-project)
-  --- [Frontend](https://github.com/DaneArcher/my-recipes-app#front-end) 
-  --- [Backend](https://github.com/DaneArcher/my-recipes-app#back-end)
-  --- [Database](https://github.com/DaneArcher/my-recipes-app#database)
   - [How to Use The Project](https://github.com/DaneArcher/my-recipes-app#how-to-use-the-project)
   - [Project Dependencies](https://github.com/DaneArcher/my-recipes-app#dependencies)
   - [How to Run the Project](https://github.com/DaneArcher/my-recipes-app#how-to-run)
   - [What We Learned/Experiences](https://github.com/DaneArcher/my-recipes-app#what-we-learnedexperiences)
   - [What's Next?](https://github.com/DaneArcher/my-recipes-app#whats-next)
-  --- [AWS](https://github.com/DaneArcher/my-recipes-app#aws)
-  --- [Checks](https://github.com/DaneArcher/my-recipes-app#checks)
-  --- [Future Features](https://github.com/DaneArcher/my-recipes-app#future-features)
 
 ## Introduction
 This web application is a React front end with a Flask backend and a PostgreSQL database hosted on AWS that extracts/stores recipes from online and enables users to search for recipes based on the ingredients in their pantries and by recipe names. 
