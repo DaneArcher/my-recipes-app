@@ -253,7 +253,7 @@ class AddRecipe extends Component{
 			case 3:
 				return(
 					<div>
-						<h1>Your Recipe was successfully sumbinted!</h1>
+						<h1>Your Recipe was successfully submitted!</h1>
 						<Button><Link to="/">Return Home</Link></Button>
 					</div>
 				)
