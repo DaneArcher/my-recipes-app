@@ -50,7 +50,7 @@ The Database is in PostgreSQL. Our Schema currently consists of 3 tables, one fo
   ---Open up CreatePGDB.py and change all instances of username and password to the ones that you created 
 
 ## How to Run
-  - First git clone our projected
+  - First git clone our projecte
   - Second cd into my-react-app and then run `npm install` this should set the react app and install all the dependencies and the node models file
   - To set up the database, open up CreatePGDB.py and uncomment the `main()` method underneath `if __name__ == "__main__:"` 
   --- Run the script only once using `Python 3` 
