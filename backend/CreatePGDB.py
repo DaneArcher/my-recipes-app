@@ -1,15 +1,16 @@
 import psycopg2
+import constants
 from psycopg2 import Error
 from psycopg2 import sql
 
 def setup():
     connection = "      "
     try:
-        connection = psycopg2.connect(user = "postgres",
-                                    password = "1234",
-                                    host = "127.0.0.1",
-                                    port = "5432",
-                                    database = "recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                    password = constants.DB_PSWD,
+                                    host = constants.DB_HOST,
+                                    port = constants.DB_PORT,
+                                    database = constants.DB_NAME)
 
         cursor = connection.cursor()
         
@@ -113,11 +114,11 @@ def insert(recipe: dict) -> bool:
     connection = 0
     recipe_id = 0
     try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="1234",
-                                        host="127.0.0.1",
-                                        port="5432",
-                                        database="recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
         cursor = connection.cursor()
 
         postgres_insert_query = """ INSERT INTO recipe_table 
@@ -183,11 +184,11 @@ def search_by_title(recipe_name: str):
     json_list = []
     print("Line 181")
     try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="1234",
-                                        host="127.0.0.1",
-                                        port="5432",
-                                        database="recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
         cursor = connection.cursor()
 
         postgres_search_query = "SELECT RECIPE_ID FROM recipe_table WHERE LOWER(TITLE) LIKE LOWER(%s);"
@@ -226,11 +227,11 @@ def search_by_ingredients(list_of_ingredients: list):
     connection = ""
     json_list = []
     try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="1234",
-                                        host="127.0.0.1",
-                                        port="5432",
-                                        database="recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
         cursor = connection.cursor()
         length = len(list_of_ingredients)
 
@@ -276,11 +277,11 @@ def get_full_recipe(recipe_id: int):
     ingredients = ""
     recipe = ""
     try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="1234",
-                                        host="127.0.0.1",
-                                        port="5432",
-                                        database="recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
         cursor = connection.cursor()
 
         postgres_search_query = "SELECT INGREDIENT FROM ingredient_table WHERE RECIPE_ID=%s;"
@@ -298,11 +299,11 @@ def get_full_recipe(recipe_id: int):
             print("fuuuuck kfkkkfkf", error)
     
     try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="1234",
-                                        host="127.0.0.1",
-                                        port="5432",
-                                        database="recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
         cursor = connection.cursor()
 
         postgres_search_query = "SELECT * FROM recipe_table WHERE RECIPE_ID=%s;"
@@ -358,11 +359,11 @@ def get_full_recipe(recipe_id: int):
 
 def drop():
     try:
-        connection = psycopg2.connect(user="postgres",
-                                        password="1234",
-                                        host="127.0.0.1",
-                                        port="5432",
-                                        database="recipe_app_db")
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
         cursor = connection.cursor()
 
         cursor.execute("DROP SCHEMA public CASCADE;")
