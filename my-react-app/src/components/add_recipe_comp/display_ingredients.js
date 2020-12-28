@@ -2,11 +2,11 @@ import React from 'react';
 import {Button, Segment, Icon} from 'semantic-ui-react';
 
 
-const DisplayIngredients = ({ingredients, deletIngredient}) =>{
+const DisplayIngredients = ({ingredients, deleteIngredient}) =>{
     const ingredientsList = ingredients.length ? (
         ingredients.map((ingredient,index) => {
             return(
-                <div key={ingredient}>
+                <div key={index}>
                     {/*
                     <p>{ingredient} <button onClick={()=>{deletIngredient(index)}}>X</button></p>
                    
@@ -16,7 +16,7 @@ const DisplayIngredients = ({ingredients, deletIngredient}) =>{
                         <Button 
                             floated='right' 
                             icon
-                            onClick={()=>{deletIngredient(index)}} 
+                            onClick={()=>{deleteIngredient(index)}} 
                             color='red' 
                             size='mini'>
                             <Icon name='close'/>
