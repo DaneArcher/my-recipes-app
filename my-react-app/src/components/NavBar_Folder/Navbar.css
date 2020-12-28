@@ -1,0 +1,74 @@
+
+.navbar {
+    background-color: grey;
+    display: flex;
+    align-items: center; /*Y cordinate centerd*/
+    font-size: 1.2rem; /* also affects the hight*/
+    height: 56px;
+}
+/*
+.navbar-logo, .nav-menu, .menu-icon{
+    border: 1px solid red;
+}
+.nav-links{
+    border: 1px solid white;
+}*/
+.navbar-logo{
+    color: white;
+    justify-self: start;
+    margin-left: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+.nav-menu{    
+    margin-left: auto; /*i do not understand how this sends the last flex item to the left*/
+    /*margin-left: auto is refering to the flex item (nav-menu) in in side the flexbox NavbarItems*/
+    display: flex;
+    list-style: none; /*removes bullet points*/
+    padding: 0; /*removes padding for bullet points*/
+    margin-right: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.nav-links{
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 2rem;
+}
+.nav-links:hover {
+    background-color: #6d76f7;
+    border-radius: 4px;
+    transition: all 0.2s ease-out;
+}
+.menu-icon{
+    display: none;
+}
+@media screen and (max-width: 1000px) {
+    .nav-menu{
+        display: none;
+    } 
+    .menu-icon{
+        display: flex; /*why does block make it reappear*/
+        margin-left: auto;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: white;
+        margin-right: 20px;
+    }
+    .nav-menu.active{
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        left: 0px;
+        top: 56px;
+        height: 230px;
+        width: 100%;
+        background-color: grey;
+        padding-top: 20px;
+        gap: 20px;
+    }
+    .nav-links{
+        margin-left: 20px;
+    }
+}
