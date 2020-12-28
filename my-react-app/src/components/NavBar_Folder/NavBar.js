@@ -12,7 +12,7 @@ class NavBar extends Component{
             <nav className='navbar'>
                 <h1 className='navbar-logo'>Recipe Book<i className="fab fa-react"></i></h1>
                 <div className='menu-icon' onClick={this.handleClick}>
-                    <i className={this.state.clicked ? 'fass fa-times' : 'fas fa-bars'}></i>
+                    <i className={this.state.clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
                 </div>
                 <ul className={this.state.clicked ? 'nav-menu active' : 'nav-menu'}>
                     <li><Link className='nav-links' to='/'>Home</Link></li>
