@@ -155,7 +155,7 @@ class Search extends Component{
                                         </div>
                                         <div><button onClick={this.nextStep}>search</button></div>
                                     </div> 
-                                    <DisplayIngredients ingredients={this.state.ingredients} deletIngredient={this.deleteIngredient}/>
+                                    <DisplayIngredients ingredients={this.state.ingredients} deleteIngredient={this.deleteIngredient}/>
                                 </div>
                                 )
                             }            
