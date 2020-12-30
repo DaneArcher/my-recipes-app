@@ -47,6 +47,17 @@ class Search extends Component{
     handleChange = (input) => e =>{
         this.setState({[input]: e.target.value})
     }
+    keyPress = (e) =>{
+        if(e.keyCode === 13){
+            if(e.target.name === 'Title'){
+                this.nextStep()
+            }
+            else{
+                this.addIngredient()
+            }
+        }    
+    }
+
     /**need to come back to  */
     addIngredient = () =>{
         let ingredients = [...this.state.ingredients, this.state.ingredient];
@@ -141,7 +152,7 @@ class Search extends Component{
 
                             {(radio_value === 'Title') ? 
                                 (<div className='search'>
-                                    <input type='text' className='input-area' placeholder='Crème Brûlée' value={this.state.title} onChange={this.handleChange('title')}/>
+                                    <input type='text' className='input-area' placeholder='Crème Brûlée' value={this.state.title} onChange={this.handleChange('title')} name='Title' onKeyDown={this.keyPress}/>
                                     <div className='btn-div' onClick={this.nextStep}>
                                         <i className='fas fa-search'/>
                                     </div>
@@ -149,7 +160,7 @@ class Search extends Component{
                                 ):(
                                 <div>
                                     <div className='search'>
-                                        <input type='text' className='input-area' placeholder='Ingredient(s)' value={this.state.ingredient} onChange={this.handleChange('ingredient')}/>
+                                        <input type='text' className='input-area' placeholder='Ingredient(s)' value={this.state.ingredient} onChange={this.handleChange('ingredient')} name='Ingredient' onKeyDown={this.keyPress}/>
                                         <div className='btn-div' onClick={this.addIngredient}>
                                             <i className='fas fa-plus'/>
                                         </div>
