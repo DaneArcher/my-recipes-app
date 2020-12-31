@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import { Form, Input, Button, Icon } from 'semantic-ui-react';
-import DisplayIngredients from './add_recipe_comp/display_ingredients.js'
-import AddIngredient from './add_recipe_comp/add_ingredients.js'
-import {Link} from 'react-router-dom'
+import React, {Component} from 'react'
+import DisplayIngredients from './display_ingredients'
+import AddIngredient from './add_ingredients'
+//import {Link} from 'react-router-dom'
+import './AddRecipe.css'
 
 class AddRecipe extends Component{
     state = {
@@ -21,24 +21,29 @@ class AddRecipe extends Component{
         directions: '',
 		chef_notes: '',
 		img_link: '',
-		step: 0,
+		step: 2,
 		url: 'https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756'
     }
-    handleChange = (input) => e =>{
-        this.setState({[input]: e.target.value})
+    handleChange = (e) =>{
+        this.setState({[e.target.name]: e.target.value})
     }
-    nextSection = () =>{
-		  const {step} = this.state
-		  this.setState({
-			  step: step + 1
-		  })
-	 }
-	 previousSection = () =>{
-		const {step} = this.state
-		this.setState({
-			step: step - 1
-		})
-  }
+    keyPress = (e) =>{
+        if(e.keyCode === 13){
+            this.scrape()
+        }    
+    }
+    nextStep = () =>{
+        let {step} = this.state
+        this.setState({
+            step: step + 1
+        })
+    }
+    previousStep = () => {
+        let {step} = this.state
+        this.setState({
+            step: step -1
+        })
+    }
     addIngredient = (ingredient) =>{
         let ingredients = [...this.state.ingredients, ingredient];
         this.setState({
@@ -50,7 +55,7 @@ class AddRecipe extends Component{
             ingredient_tags
 		  })
 	 }
-	 deletIngredient = (index) =>{
+	 deleteIngredient = (index) =>{
 		 let {ingredients, ingredient_tags} = this.state
 		 ingredients.splice(index,1)
 		 ingredient_tags.splice(index,1)
@@ -59,17 +64,7 @@ class AddRecipe extends Component{
 			 ingredient_tags
 		 })
 	 }
-	 parsedIngr = (index) => e =>{
-		//console.log('hello') 
-		let {ingredient_tags} = this.state
-		ingredient_tags[index] = e.target.value
-		this.setState({
-			ingredient_tags
-		})
-		//console.log(this.state.ingredients)
-		//console.log(this.state.ingredient_tags)
-	 }
-	 scrape = () =>{
+    scrape = () =>{
 		let link = 'http://localhost:5000/scrape_recipes?link='
 		const {url} = this.state
 		link = link.concat(url)
@@ -94,196 +89,103 @@ class AddRecipe extends Component{
 				  })
 			}
 			//.then(()=>{this.nextSection()})
-			this.nextSection()
+			this.nextStep()
 		})
-	 }
-	 submitRecipe = () =>{
-		 let copyState = {}
-		 let {step} = this.state
-		 Object.assign(copyState, this.state)
-		 delete copyState["step"];
-
-		 fetch('http://localhost:5000/add_recipes', {
-		   method: 'POST', // or 'PUT'
-		   headers: {
-			 'Content-Type': 'application/json',
-		   },
-		   body: JSON.stringify(copyState),
-		 }).then(response => response.text())
-		 .then(text => {
-			 console.log(text)
-			 if(text === "response is good"){
-				this.setState({step: step + 1})
-			 }
-			})		 
-	 }
-
-    render(){
-		const {step} = this.state
-        switch(step){
-			case 0:
-				return(
-					<div>
-						<Form>
-							<Form.Input placeholder='URL' onChange = {this.handleChange('url')} value = {this.state.url}/>
-							<Button.Group>
-								<Button onClick = {this.scrape}>Scrape</Button>
-								<Button.Or />
-								<Button onClick = {this.nextSection}>Skip</Button>
-							</Button.Group>
-						</Form>
-					</div>
-				)
-            case 1:
-					return(
-						<div>
-							 <h1>Testing</h1>
-							 <Form>
-								  <Form.Field width={5}> 
-										<label>Title</label>
-										<Input
-											 placeholder='Title'
-											 onChange = {this.handleChange('title')}
-											 value = {this.state.title}
-										/>                        
-								  </Form.Field>
-								  <Form.Field> 
-										<label>Author</label>
-										<Input
-											 placeholder='Author'
-											 onChange = {this.handleChange('author')}
-										/>                        
-								  </Form.Field>
-								  <Form.Field> 
-										<label>Source</label>
-										<Input
-											 placeholder='Website, Book, Magazine, (optional)'
-											 onChange = {this.handleChange('src')}
-										/>                        
-								  </Form.Field>
-								  <Form.Field> 
-										<label>Quick Description</label>
-										<Input
-											 placeholder='Toasted tortillas topped with flavorful black beans and fresh vegetables make a quick and delicious...'
-											 onChange = {this.handleChange('quick_description')}
-										/>                        
-								  </Form.Field>
-								  <Form.Group widths='equal'>
-										<Form.Field> 
-											 <label>Total Time</label>
-											 <Input
-												  placeholder='2 hours'
-												  onChange = {this.handleChange('total_time')}
-											 />                        
-										</Form.Field>
-										<Form.Field> 
-											 <label>Prep Time</label>
-											 <Input
-												  placeholder='30 minutes'
-												  onChange = {this.handleChange('prep_time')}
-											 />                        
-										</Form.Field>
-										<Form.Field> 
-											 <label>Cook Time</label>
-											 <Input
-												  placeholder='1 hour and 30 minutes'
-												  onChange = {this.handleChange('cook_time')}
-											 />                        
-										</Form.Field>
-								  </Form.Group>
-								  <Form.Group widths='equal'>
-										<Form.Field> 
-											 <label>Rating</label>
-											 <Input
-												  placeholder='8/10'
-												  onChange = {this.handleChange('rating')}
-											 />                        
-										</Form.Field>
-										<Form.Field> 
-											 <label>Servings</label>
-											 <Input
-												  placeholder='4'
-												  onChange = {this.handleChange('servings')}
-											 />                        
-										</Form.Field>
-										<Form.Field> 
-											 <label>Calories</label>
-											 <Input
-												  placeholder='375 per serving'
-												  onChange = {this.handleChange('calories')}
-											 />                        
-										</Form.Field>
-								  </Form.Group>
-								</Form>
-								  <DisplayIngredients ingredients={this.state.ingredients} deletIngredient={this.deletIngredient}/>
-								<Form>
-								  <AddIngredient addIngredient={this.addIngredient}/>
-								  <Form.TextArea label='Directions' onChange = {this.handleChange('directions')} rows="8" placeholder='Start by...' value={this.state.directions}/>
-								  <Form.TextArea label='Chef Notes' onChange = {this.handleChange('chef_notes')} rows="3" placeholder='Simmer for 10 minutes instead of 5 iminutes'/>
-								<Button.Group>
-									<Button onClick ={this.previousSection}>Previous</Button>
-									<Button.Or/>
-									<Button onClick = {this.nextSection} animated>
-											<Button.Content visible>Next</Button.Content>
-											<Button.Content hidden>
-												<Icon name = 'arrow right'/>
-											</Button.Content>
-									</Button>
-								</Button.Group>
-							 </Form>
-						</div>
-				  )
-			case 2:
-				return(
-					<div>
-						<p>In step 2</p>
-						{this.state.ingredients.map((item, index) => (
-							<div key={index}>
-								<Input label={item} onChange={this.parsedIngr(index)} value={this.state.ingredient_tags[index]}/>
-							</div>
-						))}
-						<Button.Group>
-							<Button onClick={this.previousSection}>Previous</Button>
-							<Button.Or/>
-							<Button onClick={this.submitRecipe}>Submit</Button>
-						</Button.Group>
-					</div>
-					
-				)
-			case 3:
-				return(
-					<div>
-						<h1>Your Recipe was successfully submitted!</h1>
-						<Button><Link to="/">Return Home</Link></Button>
-					</div>
-				)
-			default:
-				//https://eslint.org/docs/rules/default-case
-				return(
-					
-					<p>In default case COME BACK TO THIS AND LEARN MORE</p>
-				)
-			
-        }
-
     }
+    parsedIngr = (index) => e =>{
+		//console.log('hello') 
+		let {ingredient_tags} = this.state
+		ingredient_tags[index] = e.target.value
+		this.setState({
+			ingredient_tags
+		})
+		//console.log(this.state.ingredients)
+		//console.log(this.state.ingredient_tags)
+	 }
+    render(){
+        let {step} = this.state
+        switch(step){
+            case 1:
+                return(
+                    <div className='scrape-box'>
+                        <label>Site to Scrape:</label>
+                        <input type='text' placeholder='URL' onChange={this.handleChange} value = {this.state.url} name='url' onKeyDown={this.keyPress}/>
+                        <button onClick={this.scrape}>Scrape</button>
+                        <span> OR </span>
+                        <button onClick={this.nextStep}>Skip</button>
+                    </div>
+                )
+            case 2:
+                return(
+                    <div className='page'>
+                        <label>Title</label>
+                        <input name='title' value={this.state.title} onChange={this.handleChange} placeholder='Title'/>
+                        <label>Author</label>
+                        <input name='author' value={this.state.author} onChange={this.handleChange} placeholder='Author'/>
+                        <label>Source</label>
+                        <input name='src' value={this.state.src} onChange={this.handleChange} placeholder='Website, Book, Magazine, (optional)'/>
+                        <label>Quick Descriptions</label>
+                        <textarea name='quick_description' value={this.state.quick_description} onChange={this.handleChange} placeholder='Toasted tortillas topped with flavorful black beans and fresh vegetables make a quick and delicious...'/>
+                        <div className='descriptors'>
+                            <label>Total Time</label>
+                            <input name='total_time' value={this.state.total_time} onChange={this.handleChange} placeholder='X Hours or X Minutes'/>
+                            <label>Cook Time</label>
+                            <input name='cook_time' value={this.state.cook_time} onChange={this.handleChange} placeholder='X Hours or X Minutes'/>
+                            <label>Prep Time</label>
+                            <input name='prep_time' value={this.state.prep_time} onChange={this.handleChange} placeholder='X Hours or X Minutes'/>
+                            <label>Searvings</label>
+                            <input name='servings' value={this.state.servings} onChange={this.handleChange} placeholder='4'/>
+                            <label>Calories Per Serving</label>
+                            <input name='calories' value={this.state.calories} onChange={this.handleChange} placeholder='375'/>
+                        </div>
+                        <label>Rating</label>
+                        <input name='rating' value={this.state.rating} onChange={this.handleChange} placeholder='4/5'/>
+                        <DisplayIngredients ingredients={this.state.ingredients} deleteIngredient={this.deleteIngredient}/>
+                        <AddIngredient addIngredient={this.addIngredient}/>  
+                        <label>Directions</label>
+                        <textarea name='directions' value={this.state.directions} onChange={this.handleChange} placeholder='Start by...'/>
+                        <label>Notes</label>
+                        <textarea name='chef_notes' value={this.state.chef_notes} onChange={this.handleChange} placeholder='Simmer for 10 minutes instead of 5 iminutes'/>
 
+                        <label>Website URL</label>
+                        <input name='url' value={this.state.url} onChange={this.handleChange} placeholder='www.foodnetwork.com'/>
+                        <label>Image Link</label>
+                        <input name='img_link' value={this.state.img_link} onChange={this.handleChange}/>
+                        <button onClick={this.previousStep}>Previous</button>
+                        <button onClick={this.nextStep}>Next Step</button>
+                    </div>
+                )
+            case 3:
+                return(
+                    <div className='page'>
+                        in step 3
+                        adding the ingredient tags
+                        {this.state.ingredients.map((item, index) =>(
+                            <div key={index}>
+                                <label>{item}</label>
+                                <input value={this.state.ingredient_tags[index]} onChange={this.parsedIngr(index)}/>
+                            </div>
+                        ))}
+                        <button onClick={this.previousStep}>Previous</button>
+                        <button onClick={this.nextStep}>Review</button>
+                    </div>
+                )
+            case 4:
+                return(
+                    <div>
+                        review and submit
+                        display recipe component goes here
+                        <button onClick={this.previousStep}>Previous</button>
+                        <button >Submit</button>
+                    </div>
+                )
+            default:
+                //https://eslint.org/docs/rules/default-case
+                return(                    
+                    <p>In default case COME BACK TO THIS AND LEARN MORE</p>
+                )
+        }
+    }
 }
 
-export default AddRecipe;
-/*
-TODO: 
-	--check to see if user added title, ingredients, and directions before moving on (required fields)
-	--handle deleting ingredents and how that effects ingredents_tags
-	--in case of a user is switching between the add recipe pg and the parsing page make sure not to redue or over write work
-	--in case user returns to add recipe pg to change ingredents make sure that the equivalent paring tab is updated
-	--parsed ingredets by user make sure their are no spaces in front or and the end and any bad characters withing the parsted ingredents i.e. numbers and symbols
-	--check for duplicates ingredents and parsed ingredents
-	--check for strings of blank spaces  
-	--if user is edeting ingredents in a subminted recipe make sure that recipe is removed from old ingredent_tag
-	--delete button
-	--previous button
-	--option between adding recipie by hand and link
-	--multiple ingredent_tags for one ingredent
-	--recipe type check boxes i.e lunch, desert, drinks....
-*/
+export default AddRecipe
