@@ -7,7 +7,7 @@ it will extend past the div*/
     border: 1px solid lightgray;
     border-radius: 3px;
     height: 40px;
-    font-size: 16px;
+    font-size: 14px;
     padding: 0 10px;
 }
 .segment button{
@@ -20,7 +20,7 @@ it will extend past the div*/
     cursor: pointer;
     position: relative;
 }
-.fas {
+.segment button .fas {
     position:absolute;
     top: 50%;
     left: 50%;
@@ -29,7 +29,7 @@ it will extend past the div*/
 }
 .add-ingredient {
     display: flex;
-    width: 500px;
+    width: auto;
     height: 40px;
     overflow: hidden;
     border-radius: 5px;
@@ -38,7 +38,7 @@ it will extend past the div*/
 .add-ingredient input{
     width: 100%;
     border: none;
-    font-size: 16px;
+    font-size: 14px;
 }
 .add-ingredient .btn-div{
     width: 40px;
