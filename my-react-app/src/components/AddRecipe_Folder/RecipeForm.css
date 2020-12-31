@@ -1,0 +1,46 @@
+.form-title label, .form-author label, .form-source label,
+.form-rating label, .form-Q-description label, .form-url label,
+.form-img label{
+    display: block;
+}
+
+.form-Q-description, .form-notes{
+    width: 500px;
+    margin: 0px auto;
+
+}
+.form-Q-description textarea, .form-notes textarea{
+    width: 100%;
+    overflow: hidden; /*gets rid of scroll bar*/
+    height: 55px;
+    resize: none; /*gets rid of the resizing arow in the right hand corner*/
+}
+
+.form-instructions{
+    display: flex;
+    height: auto;
+}
+.form-instructions .form-ingredients{
+    border: 1px solid black;
+    min-width: 33.33%;
+}
+.form-instructions .form-directions{
+    border: 1px solid black;
+    min-width: 66.66%;
+}
+.form-instructions .form-directions textarea{
+    width: 100%;
+    /*overflow: hidden; /*gets rid of scroll bar*/
+    height: 200px;
+    resize: none; /*gets rid of the resizing arow in the right hand corner*/
+    box-sizing: border-box;
+}
+/*
+.tagform{
+    width: 400px;
+    margin: 0px auto;
+}
+.tagform label, .tagform input{
+    min-width: 50%;
+    word-wrap: break-word;
+}*/
