@@ -18,25 +18,11 @@ import Card from '../Card_Folder/Card'
 
 class Search extends Component{
     state = {
-        radio_value: 'Ingredient',
+        radio_value: 'Title',
         title: '',
         ingredient: '',
-        ingredients: ['testing1','testing2','testing55'],
-        recipe_list: [{
-            img: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg',
-            title: 'Slow-Cooker Hot Chocolate',
-            quick_description: 'Whip up a big batch of perfect hot chocolate for your favorite friends with this effortless slow-cooker recipe. We used semisweet',
-            rating: '5 out of 5',
-            total_time: '2 hr 45 min', 
-            id: 1
-        },{
-            img: '//food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_POINSETTIA_PINWHEEL_COOKIES_H_f_s4x3.jpg.rend.hgtvcom.966.725.suffix/1602697398437.jpeg',
-            title: 'Slow-Cooker Hot Chocolate',
-            quick_description: 'Whip up a big batch of perfect hot chocolate for your favorite friends with this effortless slow-cooker recipe. We used semisweet',
-            rating: '5 out of 5',
-            total_time: '2 hr 45 min',
-            id: 2 
-        }],
+        ingredients: [],
+        recipe_list: [],
         recipe_id: 0,
         step: 1
     }
@@ -124,9 +110,6 @@ class Search extends Component{
             step: this.state.step + 1
         })
     }
-    test = () =>{
-        console.log('clicked')
-    }
     render(){
         const {radio_value, step} = this.state
         switch(step){
@@ -203,8 +186,7 @@ class Search extends Component{
             case 3:
                 return(
                     <div>
-                        <p>in case 3: {this.state.recipe_id}</p>
-                        {/*<DisplayRecipe recipe_id={this.state.recipe_id}/>*/}
+                        <DisplayRecipe id={this.state.recipe_id}/>
                         <button onClick={this.previousStep}>previous</button>
                     </div>
                 )

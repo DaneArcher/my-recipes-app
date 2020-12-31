@@ -6,6 +6,7 @@ class DisplayRecipe extends Component{
         recipe: null
     }
     componentDidMount(){
+        /*
         console.log('component did mount')
         let recipe = {
             title: 'Sun-Dried Romatoes',
@@ -26,7 +27,7 @@ class DisplayRecipe extends Component{
             img_link: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg'
         }
         this.setState({recipe})
-        /*
+        */
         if(this.props.id !== null){        
             let link = 'http://localhost:5000/full_recipe?recipe_id='
             let recipe_id = this.props.recipe_id        
@@ -50,7 +51,7 @@ class DisplayRecipe extends Component{
         }
         else{
             //ERROR you did not pass any props to this componite give error
-        }*/
+        }
     }
     checkRecipe = () =>{
         let packaged_data = {}
