@@ -27,19 +27,30 @@ class DisplayRecipe extends Component{
         }
         this.setState({recipe})
         /*
-        let link = 'http://localhost:5000/full_recipe?recipe_id='
-        let recipe_id = this.props.recipe_id        
-        link = link.concat(recipe_id)
+        if(this.props.id !== null){        
+            let link = 'http://localhost:5000/full_recipe?recipe_id='
+            let recipe_id = this.props.recipe_id        
+            link = link.concat(recipe_id)
 
-        fetch(link)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            console.log(data.recipe)
-            this.setState({
-                recipe: data.recipe
+            fetch(link)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                console.log(data.recipe)
+                this.setState({
+                    recipe: data.recipe
+                })
             })
-        })*/        
+        }
+        else if(this.props.recipe !== null){
+            //make sure it's not recipe.recipe
+            this.setState({
+                recipe: this.props.recipe
+            })
+        }
+        else{
+            //ERROR you did not pass any props to this componite give error
+        }*/
     }
     checkRecipe = () =>{
         let packaged_data = {}
