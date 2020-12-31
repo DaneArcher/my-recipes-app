@@ -1,28 +1,17 @@
 import React from 'react';
-import {Button, Segment, Icon} from 'semantic-ui-react';
-
-
+import './sub.css'
+/*
+TODO add word break to segment because if the word is to big
+it will extend past the div*/
 const DisplayIngredients = ({ingredients, deleteIngredient}) =>{
     const ingredientsList = ingredients.length ? (
         ingredients.map((ingredient,index) => {
             return(
-                <div key={index}>
-                    {/*
-                    <p>{ingredient} <button onClick={()=>{deletIngredient(index)}}>X</button></p>
-                   
-                    */} 
-                    <Segment>
-                        {ingredient}
-                        <Button 
-                            floated='right' 
-                            icon
-                            onClick={()=>{deleteIngredient(index)}} 
-                            color='red' 
-                            size='mini'>
-                            <Icon name='close'/>
-                        </Button>
-                    </Segment>
-                    {/**/}
+                <div className='segment' key={index}>
+                    {ingredient}
+                    <button onClick={()=>{deleteIngredient(index)}}>
+                        <i className='fas fa-times'></i>
+                    </button>
                 </div>
             )
         })
