@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './Search.css'
-import DisplayIngredients from '../add_recipe_comp/display_ingredients'
+import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
 import Card from '../Card_Folder/Card'
 
 /**
@@ -18,10 +18,10 @@ import Card from '../Card_Folder/Card'
 
 class Search extends Component{
     state = {
-        radio_value: 'Title',
+        radio_value: 'Ingredient',
         title: '',
         ingredient: '',
-        ingredients: [],
+        ingredients: ['testing1','testing2','testing55'],
         recipe_list: [{
             img: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg',
             title: 'Slow-Cooker Hot Chocolate',
