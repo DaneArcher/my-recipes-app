@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
-import DisplayIngredients from './display_ingredients'
-import AddIngredient from './add_ingredients'
 //import {Link} from 'react-router-dom'
 import './AddRecipe.css'
+import {RecipeForm, TagForm} from './RecipeForm'
 
 class AddRecipe extends Component{
     state = {
@@ -92,7 +91,7 @@ class AddRecipe extends Component{
 			this.nextStep()
 		})
     }
-    parsedIngr = (index) => e =>{
+    parsedIngr = (e, index) =>{
 		//console.log('hello') 
 		let {ingredient_tags} = this.state
 		ingredient_tags[index] = e.target.value
@@ -118,39 +117,7 @@ class AddRecipe extends Component{
             case 2:
                 return(
                     <div className='page'>
-                        <label>Title</label>
-                        <input name='title' value={this.state.title} onChange={this.handleChange} placeholder='Title'/>
-                        <label>Author</label>
-                        <input name='author' value={this.state.author} onChange={this.handleChange} placeholder='Author'/>
-                        <label>Source</label>
-                        <input name='src' value={this.state.src} onChange={this.handleChange} placeholder='Website, Book, Magazine, (optional)'/>
-                        <label>Quick Descriptions</label>
-                        <textarea name='quick_description' value={this.state.quick_description} onChange={this.handleChange} placeholder='Toasted tortillas topped with flavorful black beans and fresh vegetables make a quick and delicious...'/>
-                        <div className='descriptors'>
-                            <label>Total Time</label>
-                            <input name='total_time' value={this.state.total_time} onChange={this.handleChange} placeholder='X Hours or X Minutes'/>
-                            <label>Cook Time</label>
-                            <input name='cook_time' value={this.state.cook_time} onChange={this.handleChange} placeholder='X Hours or X Minutes'/>
-                            <label>Prep Time</label>
-                            <input name='prep_time' value={this.state.prep_time} onChange={this.handleChange} placeholder='X Hours or X Minutes'/>
-                            <label>Searvings</label>
-                            <input name='servings' value={this.state.servings} onChange={this.handleChange} placeholder='4'/>
-                            <label>Calories Per Serving</label>
-                            <input name='calories' value={this.state.calories} onChange={this.handleChange} placeholder='375'/>
-                        </div>
-                        <label>Rating</label>
-                        <input name='rating' value={this.state.rating} onChange={this.handleChange} placeholder='4/5'/>
-                        <DisplayIngredients ingredients={this.state.ingredients} deleteIngredient={this.deleteIngredient}/>
-                        <AddIngredient addIngredient={this.addIngredient}/>  
-                        <label>Directions</label>
-                        <textarea name='directions' value={this.state.directions} onChange={this.handleChange} placeholder='Start by...'/>
-                        <label>Notes</label>
-                        <textarea name='chef_notes' value={this.state.chef_notes} onChange={this.handleChange} placeholder='Simmer for 10 minutes instead of 5 iminutes'/>
-
-                        <label>Website URL</label>
-                        <input name='url' value={this.state.url} onChange={this.handleChange} placeholder='www.foodnetwork.com'/>
-                        <label>Image Link</label>
-                        <input name='img_link' value={this.state.img_link} onChange={this.handleChange}/>
+                        <RecipeForm recipe={this.state} handleChange={this.handleChange} addIngredient={this.addIngredient} deleteIngredient={this.deleteIngredient}/>
                         <button onClick={this.previousStep}>Previous</button>
                         <button onClick={this.nextStep}>Next Step</button>
                     </div>
@@ -160,12 +127,7 @@ class AddRecipe extends Component{
                     <div className='page'>
                         in step 3
                         adding the ingredient tags
-                        {this.state.ingredients.map((item, index) =>(
-                            <div key={index}>
-                                <label>{item}</label>
-                                <input value={this.state.ingredient_tags[index]} onChange={this.parsedIngr(index)}/>
-                            </div>
-                        ))}
+                        <TagForm ingredients={this.state.ingredients} ingredient_tags={this.state.ingredient_tags} parsedIngr={this.parsedIngr}/>
                         <button onClick={this.previousStep}>Previous</button>
                         <button onClick={this.nextStep}>Review</button>
                     </div>
@@ -173,6 +135,7 @@ class AddRecipe extends Component{
             case 4:
                 return(
                     <div>
+                        {console.log(this.state)}
                         review and submit
                         display recipe component goes here
                         <button onClick={this.previousStep}>Previous</button>
