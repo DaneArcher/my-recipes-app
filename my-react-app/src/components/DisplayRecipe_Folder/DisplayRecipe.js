@@ -23,7 +23,7 @@ class DisplayRecipe extends Component{
             directions: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
             chef_notes: 'you can also do them in an oven at 125 f',
             url: 'https://www.youtube.com/watch?v=5yTWGjPdj-g',
-            img: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg'
+            img_link: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg'
         }
         this.setState({recipe})
         /*
@@ -45,7 +45,7 @@ class DisplayRecipe extends Component{
         let packaged_data = {}
         let {recipe} = this.state
 
-        let [author, src, quick_description, img, chef_notes, url] = [null, null, null, null, null, null]
+        let [author, src, quick_description, img_link, chef_notes, url] = [null, null, null, null, null, null]
         let descriptors = ['total_time', 'prep_time', 'cook_time', 'servings', 'calories']
         packaged_data['descriptorList'] = []
 
@@ -63,10 +63,10 @@ class DisplayRecipe extends Component{
         }
         packaged_data['quick_description']=quick_description
         
-        if(recipe['img'] !== ''){
-            img=<div className='img-wrapper'><img className='img' src={recipe['img']} alt={this.state.title}/></div>            
+        if(recipe['img_link'] !== ''){
+            img_link=<div className='img-wrapper'><img className='img' src={recipe['img_link']} alt={this.state.title}/></div>            
         }
-        packaged_data['img']=img
+        packaged_data['img_link']=img_link
 
         if(recipe.chef_notes !== ''){
             chef_notes= <p className='chef_notes'>{recipe.chef_notes}</p>
@@ -100,7 +100,7 @@ class DisplayRecipe extends Component{
             return(
                 <div className='page'>
                     <div className='page-header'>
-                        {packaged_data.img}
+                        {packaged_data.img_link}
                         <div className='head-container'>
                             <h1 className='title'>{recipe.title}</h1>
                             <p className='rating'>{recipe.rating}</p>
@@ -150,30 +150,5 @@ class DisplayRecipe extends Component{
             )
         }
     }
-    /*
-                    <h1 className='title'>{recipe.title}</h1>
-                    {packaged_data.author}
-                    {packaged_data.src}
-                    {packaged_data.quick_description}
-                    {packaged_data.img}
-                    {packaged_data.chef_notes}
-                    {packaged_data.descriptorList.map((item,index) => {
-                        return(
-                            <div key={index}>
-                                {item}
-                            </div>
-                        )
-                    })}
-                    <ul className='ingredients-list'>
-                        {recipe.ingredients.map((item,index) =>{
-                            return(
-                                <li key={index}><p className='ingredient-item'>{item}</p></li>
-                            )
-                        })}
-                    </ul>
-                    <p className='directions'>{recipe.directions}</p>
-                    {packaged_data.url}
-
-    */
 }
 export default DisplayRecipe
