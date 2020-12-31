@@ -1,7 +1,12 @@
 import React, {Component} from 'react'
-//import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import DisplayRecipe from '../DisplayRecipe_Folder/DisplayRecipe'
 import './AddRecipe.css'
 import {RecipeForm, TagForm} from './RecipeForm'
+
+/* TODO create a submition check response combined step 4 and 5 
+    and remove step from submit function
+    eddit scrape function*/
 
 class AddRecipe extends Component{
     state = {
@@ -20,7 +25,7 @@ class AddRecipe extends Component{
         directions: '',
 		chef_notes: '',
 		img_link: '',
-		step: 2,
+		step: 1,
 		url: 'https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756'
     }
     handleChange = (e) =>{
@@ -100,7 +105,27 @@ class AddRecipe extends Component{
 		})
 		//console.log(this.state.ingredients)
 		//console.log(this.state.ingredient_tags)
-	 }
+     }
+	 submitRecipe = () =>{
+        let copyState = {}
+        let {step} = this.state
+        Object.assign(copyState, this.state)
+        delete copyState["step"];
+
+        fetch('http://localhost:5000/add_recipes', {
+          method: 'POST', // or 'PUT'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(copyState),
+        }).then(response => response.text())
+        .then(text => {
+            console.log(text)
+            if(text === "response is good"){
+               this.setState({step: step + 1})
+            }
+           })		 
+    }
     render(){
         let {step} = this.state
         switch(step){
@@ -135,11 +160,16 @@ class AddRecipe extends Component{
             case 4:
                 return(
                     <div>
-                        {console.log(this.state)}
-                        review and submit
-                        display recipe component goes here
+                        <DisplayRecipe recipe={this.state}/>
                         <button onClick={this.previousStep}>Previous</button>
-                        <button >Submit</button>
+                        <button onclick={this.submitRecipe}>Submit</button>
+                    </div>
+                )
+            case 5:
+                return(
+                    <div>
+                        <h1> Your Recipe Was successfully submitted</h1>
+                        <button><Link to='/'>Return Home</Link></button>
                     </div>
                 )
             default:
