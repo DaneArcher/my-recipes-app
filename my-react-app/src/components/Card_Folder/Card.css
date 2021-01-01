@@ -1,0 +1,35 @@
+.card {
+    border: 1px solid black;
+    width: 290px;
+    border-radius: 10px;
+    overflow: hidden;
+    /*i get the same effect without flex box*/
+    display: flex;
+    flex-direction: column;
+    /*temporary*/
+    margin-left: 20px;
+
+}
+.img-container img{
+    height: 100%;
+    width: 100%;
+}
+.card-title {
+    word-wrap: break-word;
+    text-align: center;
+    margin-top: 11px;
+    margin-bottom: 2px;
+}
+.card-discription {
+    margin: 0;
+}
+.card-stats {
+    display: flex;
+    border-top: 2px dotted black;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 3px;
+}
+.card-time {
+    margin-left: auto;
+}

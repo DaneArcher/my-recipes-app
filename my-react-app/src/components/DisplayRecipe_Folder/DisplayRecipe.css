@@ -1,0 +1,104 @@
+.page{
+    border: 2px solid lightcoral;
+    max-width: 800px;
+    margin: 0px auto;
+    /*padding: 20px;*/
+}
+.page-header{
+    border: 2px solid blue;
+}
+.img-wrapper{
+    border: 2px solid black;
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+.img-wrapper .img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.head-container{
+    background-color: hsla(0, 8%, 82%, .90);
+}
+.title{
+    margin: 0;
+    padding: 0 20px; /*learn about line height*/
+    text-align: center;
+}
+.rating{
+    text-align: center;
+    margin-bottom: 0;
+}
+.author_src{
+    display: flex;
+    justify-content: center;
+}
+.author_src .author, .author_src .src{
+    margin: 0;
+
+}
+.descriptor-list{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 20px;
+    justify-content: center;
+}
+.descriptor-list div{
+    margin: 0 5px;
+}
+.quick_description{
+    border: 1px solid lightseagreen;
+    text-align: center;
+    width: 600px;
+    margin: 5px auto;
+    word-wrap: break-word;
+}
+.instructions{
+    display: flex;
+    padding: 0 20px;
+}
+.instructions .ingredients{
+    min-width: 33.33%;
+    border-right: 1px solid lightcoral;
+}
+.instructions .ingredients .ingredients-list{
+    border-top: 1px solid lightcoral;
+    list-style: none; /*removes bullet points*/
+    margin-top: 0;
+    padding-left: 5px;
+    padding-right: 3px;
+}
+.instructions .ingredients .ingredients-list .ingredient-item{
+    word-wrap: break-word;
+}
+.instructions .directions{
+    min-width: 66.66%;
+}
+.instructions .directions h3 ,.instructions .ingredients h3{
+    padding-left: 3px;
+    margin-bottom: 5px;
+}
+.instructions .directions .directions-text{
+    border-top: 1px solid lightcoral;
+    word-wrap: break-word;
+    padding-left: 5px;
+    padding-right: 3px;
+}
+.notes{
+    margin-top: 10px;
+    margin-left: 25px;
+}
+.notes h3{
+    margin-bottom: 0;
+}
+
+.url{
+    display: flex;
+}
+.url a{
+    margin-left: auto;
+    margin-right: 5px;
+}

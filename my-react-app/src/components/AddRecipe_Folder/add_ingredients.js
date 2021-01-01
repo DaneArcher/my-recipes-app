@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import { Form} from 'semantic-ui-react';
 //https://stackoverflow.com/questions/59032010/react-semantic-ui-add-call-to-action-on-button
 //https://www.youtube.com/watch?v=9IhsYu4eKJ8
 
@@ -19,24 +18,20 @@ class AddIngredient extends Component{
             ingredient_line:''
         })
     }
+    keyPress = (e) =>{
+        if(e.keyCode === 13){
+            this.handleClick()
+        }    
+    }
 
     render(){
         return(
-            <div>
-                <Form.Input
-                    action={{
-                        color: "green",
-                        //labelPosition: "right",
-                        icon: "plus",
-                        //content: "Checkout",
-                        onClick: this.handleClick
-                    }}
-                    placeholder="Search..."
-                    label='Add Ingredient'
-                    onChange={this.handleChange}
-                    value={this.state.ingredient_line}
-                    />
-            </div>
+            <div className='add-ingredient'>
+                <input type='text' value={this.state.ingredient_line} placeholder='Ingredient(s)' onChange={this.handleChange} onKeyDown={this.keyPress}/>
+                <div className='btn-div' onClick={this.handleClick}>
+                    <i className='fas fa-plus'/>
+                </div>
+            </div> 
         )
     }
 }

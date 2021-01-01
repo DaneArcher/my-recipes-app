@@ -1,0 +1,26 @@
+.page{
+    border: 2px solid lightcoral;
+    max-width: 800px;
+    margin: 0px auto;
+}
+
+.scrape-box{
+    position: absolute;
+    width: auto; /*this width adjust it's size based off of it's childerend*/
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid black;
+}
+.scrape-box label{
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+.scrape-box input[type='text']{
+    display: block;
+    width: 500px;
+    height: 40px;
+    border-radius: 5px;
+    border: 2px solid lightgray;
+}

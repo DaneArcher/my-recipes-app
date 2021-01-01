@@ -1,25 +1,19 @@
 import React from 'react';
-import AddRecipe from './components/Add_recipe'
-import SearchRecipe from './components/Search_recipe'
-import Navbar from './components/NavBar'
-import DisplayRecipe from './components/DisplayRecipe'
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
-
+import { BrowserRouter, Route} from 'react-router-dom';
+import NavBar from './components/NavBar_Folder/NavBar';
+import Search from './components/Search_Folder/Search'
+import AddRecipe from './components/AddRecipe_Folder/AddRecipe'
 
 function App() {
-  // return(
-  //   <DisplayRecipe/>
-  // )
-  
-  return (
+ 
+  return(
     <BrowserRouter>
-      <div className="App">
-        <Navbar/>
-        <Route exact path='/' component={SearchRecipe}/>
-        <Route path='/add' component={AddRecipe}/>
+      <div className='App'>
+        <NavBar/>
+        <Route exact path='/' component={Search}/>
+        <Route exact path='/add' component={AddRecipe}/>       
       </div>
     </BrowserRouter>
-  );
+  )
 }
-
 export default App;
