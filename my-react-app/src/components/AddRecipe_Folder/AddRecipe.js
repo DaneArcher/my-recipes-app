@@ -78,12 +78,19 @@ class AddRecipe extends Component{
 		.then(response => response.json())
 		.then(data => {
 			//console.log(data)
+			for(let key in data){
+				this.setState({
+					key: data[key]
+				})
+			}
+			/*
 			this.setState({
 				directions: data.directions,
 				title: data.title,
 				ingredients: data.ingredients,
 				img_link: data.img_link
 			})
+			*/
 			//keeping ingredient tags same length as ingredients
 			let len = data.ingredients.length
 			for(let i = 0; i < len; i++){
@@ -93,6 +100,7 @@ class AddRecipe extends Component{
 				  })
 			}
 			//.then(()=>{this.nextSection()})
+			//should nextStep be in .then our outside?
 			this.nextStep()
 		})
     }
