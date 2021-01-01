@@ -59,15 +59,15 @@ class AddRecipe extends Component{
             ingredient_tags
 		  })
 	 }
-	 deleteIngredient = (index) =>{
-		 let {ingredients, ingredient_tags} = this.state
-		 ingredients.splice(index,1)
-		 ingredient_tags.splice(index,1)
-		 this.setState({
-			 ingredients,
-			 ingredient_tags
-		 })
-	 }
+	deleteIngredient = (index) =>{
+		let {ingredients, ingredient_tags} = this.state
+		ingredients.splice(index,1)
+		ingredient_tags.splice(index,1)
+		this.setState({
+			ingredients,
+			ingredient_tags
+		})
+	}
     scrape = () =>{
 		let link = 'http://localhost:5000/scrape_recipes?link='
 		const {url} = this.state
