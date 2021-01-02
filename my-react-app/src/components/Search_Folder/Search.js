@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import './Search.css'
 import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
 import Card from '../Card_Folder/Card'
+import DisplayRecipe from '../DisplayRecipe_Folder/DisplayRecipe'
 
 /**
  * TODO: Need to work on styling for the search box and keeping that in the center when we add ingredients
@@ -112,6 +113,7 @@ class Search extends Component{
     }
     render(){
         const {radio_value, step} = this.state
+        //console.log(this.props)
         switch(step){
             case 1:
                 return(
