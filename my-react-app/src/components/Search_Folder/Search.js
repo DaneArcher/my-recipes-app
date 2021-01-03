@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import './Search.css'
-import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
+//import './Search.css'
+//import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
 import Card from '../Card_Folder/Card'
-import DisplayRecipe from '../DisplayRecipe_Folder/DisplayRecipe'
+//import DisplayRecipe from '../DisplayRecipe_Folder/DisplayRecipe'
 
 /**
  * TODO: Need to work on styling for the search box and keeping that in the center when we add ingredients
@@ -19,44 +19,56 @@ import DisplayRecipe from '../DisplayRecipe_Folder/DisplayRecipe'
 
 class Search extends Component{
     state = {
-        radio_value: 'Title',
         title: '',
-        ingredient: '',
         ingredients: [],
         recipe_list: [],
         recipe_id: 0,
         step: 1
     }
-    /*
-    onChange = e =>{
-        this.setState({radio_value : e.target.value})
-    }*/
-    handleChange = (input) => e =>{
-        this.setState({[input]: e.target.value})
-    }
-    keyPress = (e) =>{
-        if(e.keyCode === 13){
-            if(e.target.name === 'Title'){
-                this.nextStep()
-            }
-            else{
-                this.addIngredient()
-            }
-        }    
-    }
+    componentDidMount(){
+        console.log(this.props)
+        //is setting the State needed?? because the data is saved in that location state
+        let name = this.props.location.state.name
+        if(name ==='title'){
+            let title = this.props.location.state.data
+            this.setState({
+                title: title
+            })
+            /*
+            let link = 'http://localhost:5000/search?title='
+            link = link.concat(title)
 
-    /**need to come back to  */
-    addIngredient = () =>{
-        let ingredients = [...this.state.ingredients, this.state.ingredient];
-        this.setState({
-            ingredients: ingredients,
-            ingredient: ''
-        })
-	 }
-    deleteIngredient = (index) =>{
-        let {ingredients} = this.state
-        ingredients.splice(index,1)
-        this.setState({ingredients})
+            fetch(link)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    recipe_list: data.recipes
+                })
+            })*/
+        }
+        else{
+            //name === 'ingredients'
+            let ingredients = this.props.location.state.data            
+            this.setState({
+                ingredients: ingredients
+            })
+            /*
+            let link = 'http://localhost:5000/search?ingredients='
+            let ingredient_str = ''
+            for(let i = 0; i < ingredients.length; i++){
+                ingredient_str = ingredient_str.concat(ingredients[i], ',')
+            }
+            ingredient_str = ingredient_str.slice(0, -1)
+            link = link.concat(ingredient_str)
+            
+            fetch(link)
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    recipe_list: data.recipes
+                })
+            })*/
+        }
     }
     nextStep = () =>{
         let {step} = this.state
@@ -69,10 +81,11 @@ class Search extends Component{
 		this.setState({
 			step: step - 1
 		})	
-    }    
-    get_recipes = () =>{
-        let{title, ingredients, radio_value} = this.state
-        if (radio_value === 'Title'){
+    }   
+    /* 
+    get_recipes = (name) =>{
+        if (name === 'title'){
+            let{title} = this.state
             let link = 'http://localhost:5000/search?title='
             link = link.concat(title)
 
@@ -86,6 +99,7 @@ class Search extends Component{
         }
         else{
             //radio_value === 'ingredient'
+            let{ingredients} = this.state
             let link = 'http://localhost:5000/search?ingredients='
             let ingredient_str = ''
             for(let i = 0; i < ingredients.length; i++){
@@ -102,8 +116,7 @@ class Search extends Component{
                 })
             })
         }
-        this.nextStep()
-    }
+    }*/
     showRecipe = (id) =>{
         console.log(id)
         this.setState({
@@ -112,53 +125,10 @@ class Search extends Component{
         })
     }
     render(){
-        const {radio_value, step} = this.state
+        const {step} = this.state
         //console.log(this.props)
         switch(step){
             case 1:
-                return(
-                    <div className='search-container'>
-                        <div className='search-box'>
-                            <h1 className='search-title'>Recipe Search</h1>
-                            <label className='search-radio'>
-                                Search by Title
-                                <input type='radio' 
-                                    value='Title'
-                                    checked={radio_value === 'Title'}
-                                    onChange={this.handleChange('radio_value')}/>
-                            </label>
-                            <label className='search-radio'>
-                                Search by Ingredient(s)
-                                <input type='radio' 
-                                    value='Ingredient'
-                                    checked={radio_value === 'Ingredient'}
-                                    onChange={this.handleChange('radio_value')}/>
-                            </label>
-
-                            {(radio_value === 'Title') ? 
-                                (<div className='search'>
-                                    <input type='text' className='input-area' placeholder='Crème Brûlée' value={this.state.title} onChange={this.handleChange('title')} name='Title' onKeyDown={this.keyPress}/>
-                                    <div className='btn-div' onClick={this.nextStep}>
-                                        <i className='fas fa-search'/>
-                                    </div>
-                                </div>                            
-                                ):(
-                                <div>
-                                    <div className='search'>
-                                        <input type='text' className='input-area' placeholder='Ingredient(s)' value={this.state.ingredient} onChange={this.handleChange('ingredient')} name='Ingredient' onKeyDown={this.keyPress}/>
-                                        <div className='btn-div' onClick={this.addIngredient}>
-                                            <i className='fas fa-plus'/>
-                                        </div>
-                                        <div><button onClick={this.nextStep}>search</button></div>
-                                    </div> 
-                                    <DisplayIngredients ingredients={this.state.ingredients} deleteIngredient={this.deleteIngredient}/>
-                                </div>
-                                )
-                            }            
-                        </div>
-                    </div>
-                )
-            case 2:
                 let {recipe_list} = this.state
                 let results = recipe_list.length ? (
                     recipe_list.map((recipe,index) =>{
@@ -182,13 +152,12 @@ class Search extends Component{
                         <div style={{display:'flex'}}>
                             {results}
                         </div>
-                        <button onClick={this.previousStep}>Previous</button>
                     </div>
                 )
-            case 3:
+            case 2:
                 return(
                     <div>
-                        <DisplayRecipe id={this.state.recipe_id}/>
+                        {/*<DisplayRecipe id={this.state.recipe_id}/>*/}
                         <button onClick={this.previousStep}>previous</button>
                     </div>
                 )
