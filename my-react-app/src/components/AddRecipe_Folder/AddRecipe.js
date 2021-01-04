@@ -6,7 +6,8 @@ import {RecipeForm, TagForm} from './RecipeForm'
 
 /* TODO create a submition check response combined step 4 and 5 
     and remove step from submit function
-    eddit scrape function*/
+    eddit scrape function
+    when recipe is submited you should i overwrite it's history? should i save it's state history?*/
 
 class AddRecipe extends Component{
     state = {
@@ -128,7 +129,7 @@ class AddRecipe extends Component{
           body: JSON.stringify(copyState),
         }).then(response => response.text())
         .then(text => {
-            console.log(text)
+            //console.log(text)
             if(text === "response is good"){
                this.setState({step: step + 1})
             }
@@ -136,6 +137,7 @@ class AddRecipe extends Component{
     }
     render(){
         let {step} = this.state
+        //console.log(this.props)
         switch(step){
             case 1:
                 return(
