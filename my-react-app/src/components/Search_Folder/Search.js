@@ -155,9 +155,13 @@ class Search extends Component{
                     </div>
                 )
             case 2:
+                let {id} = this.state
                 return(
                     <div>
                         {/*<DisplayRecipe id={this.state.recipe_id}/>*/}
+                        {/*this.props.history.push('/recipe/{id}') */}
+                        {/*if recipe is compleate */}
+                        {/*this.props.history.push('/recipe/{id}',this.state.recipe_list[index]) */}
                         <button onClick={this.previousStep}>previous</button>
                     </div>
                 )
