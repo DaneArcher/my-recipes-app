@@ -27,7 +27,42 @@ class DisplayRecipe extends Component{
             img_link: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg'
         }
         this.setState({recipe})
+        *//*
+        Case 1: Recipe ID is in parms and location state is null signifing do a fetch (URL is:/DisplayRecipe/:ID )
+                -if fetch was a success display recipe else display no such recipe exists
+                -on refresh check gloabel state. does this make case 2 redundent
+        Case 2: Recipe ID is in parms and location state is not null signifing set component state = to location state(URL is:/DisplayRecipe/:ID) 
+        Case 3: Full Recipe is sent through as a prop signifying that DisplayRecipe is being called as a chilled component in someother component set state equal to props.recipe
+        Case 4: Error Something went wrong do something
         */
+        let recipe_id = this.props.match.params.recipe_id
+        let recipe = this.props.this.props.location.state.recipe
+        if(recipe_id !== null && recipe === null){
+            //fetch from db
+            //display if recipe exist or say recipe does not exist
+            //send recipe to the global state
+            /*if this sends somthing to the global state and we still have to check the global state in this are to
+            prevent unwanted fetches then case 2 is not needed*/
+        }
+        //the full resipe was passed through location state
+        //this should never activiate until we create a global state
+        else if (recipe !== null){
+            this.setState({
+                recipe: recipe
+            })
+        }
+        //rendering component inside another and not changing the url
+        else if(this.props.recipe !== null){
+            this.setState({
+                recipe: this.props.recipe
+            })
+        }
+        else{
+            //something went wrong do some sort of error
+        }
+
+
+        /*
         if(this.props.id !== null){        
             let link = 'http://localhost:5000/full_recipe?recipe_id='
             let recipe_id = this.props.recipe_id        
@@ -52,6 +87,7 @@ class DisplayRecipe extends Component{
         else{
             //ERROR you did not pass any props to this componite give error
         }
+        */
     }
     checkRecipe = () =>{
         let packaged_data = {}
