@@ -46,8 +46,12 @@ class HomePage extends Component{
         }
 
     }
+    componentDidMount(){
+        console.log(this.props)
+    }
     render(){
         let {radio_value} = this.state
+        //console.log(this.props)
         return(
             <div className='search-container'>
                 <div className='search-box'>
