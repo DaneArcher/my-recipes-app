@@ -143,7 +143,7 @@ class Search extends Component{
                         return(
                             <div key={index}>
                                 <div onClick={() => {this.showRecipe(recipe.recipe_id)}}>
-                                    <Card img={recipe.img_link}
+                                    <Card img_link={recipe.img_link}
                                         title={recipe.title}
                                         quick_description={recipe.quick_description}
                                         rating={recipe.rating}
