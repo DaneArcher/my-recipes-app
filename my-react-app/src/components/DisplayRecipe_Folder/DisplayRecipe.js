@@ -35,31 +35,60 @@ class DisplayRecipe extends Component{
         Case 3: Full Recipe is sent through as a prop signifying that DisplayRecipe is being called as a chilled component in someother component set state equal to props.recipe
         Case 4: Error Something went wrong do something
         */
-        let recipe_id = this.props.match.params.recipe_id
-        let recipe = this.props.this.props.location.state.recipe
-        if(recipe_id !== null && recipe === null){
-            //fetch from db
-            //display if recipe exist or say recipe does not exist
-            //send recipe to the global state
-            /*if this sends somthing to the global state and we still have to check the global state in this are to
-            prevent unwanted fetches then case 2 is not needed*/
-        }
-        //the full resipe was passed through location state
-        //this should never activiate until we create a global state
-        else if (recipe !== null){
-            this.setState({
-                recipe: recipe
-            })
-        }
-        //rendering component inside another and not changing the url
-        else if(this.props.recipe !== null){
+        console.log(this.props)
+        //let recipe_id = this.props.match.params.recipe_id
+        //let temp = this.props.match.params.temp 
+        let recipe = this.props.recipe
+        //console.log(temp)
+        console.log(this.props.recipe)
+        console.log(recipe)
+        //let recipe = this.props.location.state.recipe
+        console.log(recipe !== undefined)
+        if(recipe !== undefined){
+            //make sure it's not recipe.recipe
             this.setState({
                 recipe: this.props.recipe
             })
         }
-        else{
-            //something went wrong do some sort of error
+        else{              //if(recipe_id !== null){
+            console.log("inside else")
+            //fetch from db                                   && recipe === null
+            //display if recipe exist or say recipe does not exist
+            //send recipe to the global state
+            /*if this sends somthing to the global state and we still have to check the global state in this are to
+            prevent unwanted fetches then case 2 is not needed*/
+            let recipe_id = this.props.match.params.recipe_id
+
+            let link = 'http://localhost:5000/full_recipe?recipe_id='
+            // let recipe_id = this.props.recipe_id        
+            link = link.concat(recipe_id)
+
+            fetch(link)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                console.log(data.recipe)
+                this.setState({
+                    recipe: data.recipe
+                })
+            })
         }
+        //the full recipe was passed through location state
+        //this should never activate until we create a global state
+        // else if (recipe !== null){
+        //     this.setState({
+        //         recipe: recipe
+        //     })
+        // }
+        // //rendering component inside another and not changing the url
+        // else if(this.props.recipe !== null){
+        //     this.setState({
+        //         recipe: this.props.recipe
+        //     })
+        // }
+        // else{
+        //     //something went wrong do some sort of error
+        // }
 
 
         /*
@@ -94,7 +123,7 @@ class DisplayRecipe extends Component{
         let {recipe} = this.state
 
         let [author, src, quick_description, img_link, chef_notes, url] = [null, null, null, null, null, null]
-        let descriptors = ['total_time', 'prep_time', 'cook_time', 'servings', 'calories']
+        let descriptors = ['level', 'total_time', 'prep_time', 'cook_time', 'inactive_time', 'servings', 'calories']
         packaged_data['descriptorList'] = []
 
         if(recipe['author'] !== ''){

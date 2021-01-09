@@ -26,6 +26,7 @@ class Search extends Component{
         step: 1
     }
     componentDidMount(){
+        console.log('in search component did mount')
         console.log(this.props)
         //is setting the State needed?? because the data is saved in that location state
         let name = this.props.location.state.name
@@ -34,7 +35,7 @@ class Search extends Component{
             this.setState({
                 title: title
             })
-            /*
+            
             let link = 'http://localhost:5000/search?title='
             link = link.concat(title)
 
@@ -44,7 +45,7 @@ class Search extends Component{
                 this.setState({
                     recipe_list: data.recipes
                 })
-            })*/
+            })
         }
         else{
             //name === 'ingredients'
@@ -52,7 +53,7 @@ class Search extends Component{
             this.setState({
                 ingredients: ingredients
             })
-            /*
+            
             let link = 'http://localhost:5000/search?ingredients='
             let ingredient_str = ''
             for(let i = 0; i < ingredients.length; i++){
@@ -67,8 +68,9 @@ class Search extends Component{
                 this.setState({
                     recipe_list: data.recipes
                 })
-            })*/
+            })
         }
+        console.log("leaving component did mount")
     }
     nextStep = () =>{
         let {step} = this.state
@@ -118,24 +120,30 @@ class Search extends Component{
         }
     }*/
     showRecipe = (id) =>{
+        // console.log(id)
+        // this.setState({
+        //     recipe_id: id,
+        //     step: this.state.step + 1
+        // })
         console.log(id)
-        this.setState({
-            recipe_id: id,
-            step: this.state.step + 1
-        })
+        console.log(typeof id)
+        id = id.toString()
+        this.props.history.push('/recipe/' + id)
     }
     render(){
         const {step} = this.state
         //console.log(this.props)
         switch(step){
             case 1:
+                console.log("in case 1 render")
                 let {recipe_list} = this.state
+                console.log(recipe_list)
                 let results = recipe_list.length ? (
                     recipe_list.map((recipe,index) =>{
                         return(
                             <div key={index}>
-                                <div onClick={() => {this.showRecipe(recipe.id)}}>
-                                    <Card img={recipe.img}
+                                <div onClick={() => {this.showRecipe(recipe.recipe_id)}}>
+                                    <Card img={recipe.img_link}
                                         title={recipe.title}
                                         quick_description={recipe.quick_description}
                                         rating={recipe.rating}
@@ -155,14 +163,14 @@ class Search extends Component{
                     </div>
                 )
             case 2:
-                let {id} = this.state
+                //let {id} = this.state
                 return(
                     <div>
                         {/*<DisplayRecipe id={this.state.recipe_id}/>*/}
                         {/*this.props.history.push('/recipe/{id}') */}
-                        {/*if recipe is compleate */}
+                        {/*if recipe is complete */}
                         {/*this.props.history.push('/recipe/{id}',this.state.recipe_list[index]) */}
-                        <button onClick={this.previousStep}>previous</button>
+                        {/*<button onClick={this.previousStep}>previous</button>*/}
                     </div>
                 )
             default:

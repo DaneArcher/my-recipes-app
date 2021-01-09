@@ -15,6 +15,7 @@ class AddRecipe extends Component{
         author: '',
         src: '',
         quick_description: '',
+        level: '',
         total_time: '',
         prep_time: '',
         cook_time: '',
@@ -23,11 +24,12 @@ class AddRecipe extends Component{
         calories: '',
         ingredients: [],
         ingredient_tags: [],
+        inactive_time: '',
         directions: '',
 		chef_notes: '',
 		img_link: '',
 		step: 1,
-		url: 'https://www.foodnetwork.com/recipes/food-network-kitchen/prosciutto-wrapped-chicken-kebabs-3362756'
+		url: ''
     }
     handleChange = (e) =>{
         this.setState({[e.target.name]: e.target.value})
@@ -78,10 +80,11 @@ class AddRecipe extends Component{
 		fetch(link)
 		.then(response => response.json())
 		.then(data => {
-			//console.log(data)
+			console.log(data)
 			for(let key in data){
+                //console.log(key, data[key])
 				this.setState({
-					key: data[key]
+					[key]: data[key]
 				})
 			}
 			/*
@@ -101,7 +104,8 @@ class AddRecipe extends Component{
 				  })
 			}
 			//.then(()=>{this.nextSection()})
-			//should nextStep be in .then our outside?
+            //should nextStep be in .then our outside?
+            console.log(this.state)
 			this.nextStep()
 		})
     }
@@ -172,7 +176,7 @@ class AddRecipe extends Component{
                     <div>
                         <DisplayRecipe recipe={this.state}/>
                         <button onClick={this.previousStep}>Previous</button>
-                        <button onclick={this.submitRecipe}>Submit</button>
+                        <button onClick={this.submitRecipe}>Submit</button>
                     </div>
                 )
             case 5:

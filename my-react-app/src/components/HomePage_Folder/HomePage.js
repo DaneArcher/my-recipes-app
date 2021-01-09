@@ -47,7 +47,7 @@ class HomePage extends Component{
 
     }
     componentDidMount(){
-        console.log(this.props)
+        console.log(Object.keys(this.props.match.params).length === 0)
     }
     render(){
         let {radio_value} = this.state
