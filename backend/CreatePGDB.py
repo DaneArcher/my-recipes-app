@@ -16,20 +16,25 @@ def setup():
         
         create_table_query = '''CREATE TABLE recipe_table
             (RECIPE_ID SERIAL PRIMARY KEY     NOT NULL,
-            TITLE           TEXT    NOT NULL,
-            DIRECTIONS      TEXT    NOT NULL,
-            IMG_LINK        TEXT    NOT NULL,
-            PREP_TIME       TEXT    NOT NULL,
-            TOTAL_TIME      TEXT    NOT NULL,
-            COOK_TIME       TEXT    NOT NULL,
-            CALORIES        INT     NOT NULL,
-            RATING          FLOAT   NOT NULL,
-            SERVINGS        TEXT     NOT NULL,
-            AUTHOR          TEXT    NOT NULL,
-            SOURCE          TEXT    NOT NULL,
-            QUICK_DESCRIPTION TEXT  NOT NULL,
-            CHEF_NOTES      TEXT    NOT NULL,
-            SOURCE_URL      TEXT    NOT NULL); '''
+            TITLE           TEXT    ,
+            INGREDIENTS      TEXT[]  ,
+            PARSED_INGREDIENTS TEXT[] ,
+            DIRECTIONS      TEXT    ,
+            IMG_LINK        TEXT    ,
+            PREP_TIME       TEXT    ,
+            TOTAL_TIME      TEXT    ,
+            COOK_TIME       TEXT    ,
+            INACTIVE_TIME   TEXT    ,
+            CALORIES        INT     ,
+            RATING          FLOAT   ,
+            SERVINGS        TEXT    ,
+            AUTHOR          TEXT    ,
+            SOURCE          TEXT    ,
+            QUICK_DESCRIPTION TEXT  ,
+            CHEF_NOTES      TEXT    ,
+            SOURCE_URL      TEXT    ,
+            NUM_INGREDIENTS INT     ,
+            LEVEL      TEXT); '''
         
         cursor.execute(create_table_query)
         connection.commit()
@@ -39,25 +44,45 @@ def setup():
         print ("Error while creating recipe_table", error)
 
     
+    # try:
+    #     cursor = connection.cursor()
+
+
+    #     create_table_query = '''CREATE TABLE ingredient_table
+    #     (
+    #         RECIPE_ID      INT     NOT NULL,
+    #         INGREDIENT     TEXT    NOT NULL,
+    #         PRIMARY KEY (RECIPE_ID,INGREDIENT)
+    #     ); '''
+    #     cursor.execute(create_table_query)
+    #     connection.commit()
+    #     print("Ingredient Table created succesffully in PostegreSQL")
+
+
+    # except (Exception, psycopg2.DatabaseError) as error :
+    #     print ("Error while creating ingredient_table", error)
+
     try:
         cursor = connection.cursor()
 
-
-        create_table_query = '''CREATE TABLE ingredient_table
-        (
-            RECIPE_ID      INT     NOT NULL,
-            INGREDIENT     TEXT    NOT NULL,
-            PRIMARY KEY (RECIPE_ID,INGREDIENT)
-        ); '''
+        create_table_query = '''CREATE TABLE result_card_table AS
+            SELECT RECIPE_ID, TITLE, TOTAL_TIME, IMG_LINK, QUICK_DESCRIPTION, RATING 
+            FROM recipe_table; '''
+        
         cursor.execute(create_table_query)
-        connection.commit()
-        print("Ingredient Table created succesffully in PostegreSQL")
 
+        cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_recipe_id FOREIGN KEY (RECIPE_ID) REFERENCES recipe_table(RECIPE_ID);")
+        # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_title FOREIGN KEY (TITLE) REFERENCES recipe_table(TITLE);")
+        # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_total_time FOREIGN KEY (TOTAL_TIME) REFERENCES recipe_table(TOTAL_TIME);")
+        # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_img_link FOREIGN KEY (IMG_LINK) REFERENCES recipe_table(IMG_LINK);")
+        # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_quick_description FOREIGN KEY (QUICK_DESCRIPTION) REFERENCES recipe_table(QUICK_DESCRIPTION);")
+        # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_rating FOREIGN KEY (RATING) REFERENCES recipe_table(RATING);")
+
+        connection.commit()
+        print("Result Card Table created succesffully in PostegreSQL")
 
     except (Exception, psycopg2.DatabaseError) as error :
-        print ("Error while creating ingredient_table", error)
-
-
+        print ("Error while creating result_card_table", error)
 
     try:
         cursor = connection.cursor()
@@ -111,6 +136,8 @@ def setup():
 def insert(recipe: dict) -> bool:
     ingredient_tag_list = recipe['ingredient_tags']
     ingredient_list = recipe['ingredients']
+    #print(type(ingredient_list))
+    #print(ingredient_list)
     connection = 0
     recipe_id = 0
     try:
@@ -122,10 +149,11 @@ def insert(recipe: dict) -> bool:
         cursor = connection.cursor()
 
         postgres_insert_query = """ INSERT INTO recipe_table 
-                                    (TITLE, DIRECTIONS, IMG_LINK, PREP_TIME, TOTAL_TIME, COOK_TIME, CALORIES, 
-                                    RATING, SERVINGS, AUTHOR, SOURCE, QUICK_DESCRIPTION, CHEF_NOTES, SOURCE_URL) 
-                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING RECIPE_ID;"""
-        record_to_insert = (recipe['title'], recipe['directions'], recipe['img_link'], recipe['prep_time'], recipe['total_time'], recipe['cook_time'], int(recipe['calories']), float(recipe['rating']), recipe['servings'], recipe['author'], recipe['src'], recipe['quick_description'],recipe['chef_notes'], recipe['url'])
+                                    (TITLE, INGREDIENTS, PARSED_INGREDIENTS, DIRECTIONS, IMG_LINK, PREP_TIME, TOTAL_TIME, COOK_TIME, INACTIVE_TIME, CALORIES, 
+                                    RATING, SERVINGS, AUTHOR, SOURCE, QUICK_DESCRIPTION, CHEF_NOTES, SOURCE_URL, NUM_INGREDIENTS, LEVEL) 
+                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING RECIPE_ID;"""
+        record_to_insert = (recipe['title'], ingredient_list, ingredient_tag_list, recipe['directions'], recipe['img_link'], recipe['prep_time'], recipe['total_time'], recipe['cook_time'], recipe['inactive_time'], int(recipe['calories']), float(recipe['rating']), recipe['servings'], recipe['author'], recipe['src'], recipe['quick_description'],recipe['chef_notes'], recipe['url'], len(ingredient_list), recipe['level'])
+        #print(record_to_insert)
         cursor.execute(postgres_insert_query, record_to_insert)
         recipe_id = cursor.fetchone()[0]
         print("@#^(@#(")
@@ -140,18 +168,25 @@ def insert(recipe: dict) -> bool:
 
     
     try:    
-        for ingredient in ingredient_list:
-            try:
-                cursor = connection.cursor()  
-                postgres_insert_query = '''INSERT INTO ingredient_table (INGREDIENT, RECIPE_ID) VALUES (%s,%s);'''
-                record_to_insert = (ingredient,recipe_id)
-                cursor.execute(postgres_insert_query,record_to_insert)
-                connection.commit()
-                string = ingredient + " was successfully inserted into ingredient table"
-                print(string)
-            except (Exception, psycopg2.Error) as error :
-                if(connection):
-                    print("Failed to insert record into ingredient_table", error)
+        # for ingredient in ingredient_list:
+        #     try:
+        #         cursor = connection.cursor()  
+        #         postgres_insert_query = '''INSERT INTO ingredient_table (INGREDIENT, RECIPE_ID) VALUES (%s,%s);'''
+        #         record_to_insert = (ingredient,recipe_id)
+        #         cursor.execute(postgres_insert_query,record_to_insert)
+        #         connection.commit()
+        #         string = ingredient + " was successfully inserted into ingredient table"
+        #         print(string)
+        #     except (Exception, psycopg2.Error) as error :
+        #         if(connection):
+        #             print("Failed to insert record into ingredient_table", error)
+        cursor = connection.cursor()
+        postgres_insert_query = '''INSERT INTO result_card_table SELECT RECIPE_ID, TITLE, TOTAL_TIME, IMG_LINK, QUICK_DESCRIPTION, RATING
+                                    FROM recipe_table WHERE recipe_table.RECIPE_ID = (%s);'''
+        id_to_insert = (recipe_id,)
+        cursor.execute(postgres_insert_query,id_to_insert)
+        connection.commit()
+
         for ingredient in ingredient_tag_list:
             if ingredient != "":
                 try:
@@ -207,7 +242,7 @@ def search_by_title(recipe_name: str):
             json_map['total_time'] = ret[0][1]
             json_map['img_link'] = ret[0][2]
             json_map['rating'] = ret[0][3]
-            json_map['recipe_id'] = recipe_id
+            json_map['recipe_id'] = recipe_id[0]
             json_list.append(json_map)
             print("Line 207")
         return json_list
@@ -276,27 +311,27 @@ def get_full_recipe(recipe_id: int):
     connection = ""
     ingredients = ""
     recipe = ""
-    try:
-        connection = psycopg2.connect(user = constants.DB_USER,
-                                        password = constants.DB_PSWD,
-                                        host = constants.DB_HOST,
-                                        port = constants.DB_PORT,
-                                        database = constants.DB_NAME)
-        cursor = connection.cursor()
+    # try:
+    #     connection = psycopg2.connect(user = constants.DB_USER,
+    #                                     password = constants.DB_PSWD,
+    #                                     host = constants.DB_HOST,
+    #                                     port = constants.DB_PORT,
+    #                                     database = constants.DB_NAME)
+    #     cursor = connection.cursor()
 
-        postgres_search_query = "SELECT INGREDIENT FROM ingredient_table WHERE RECIPE_ID=%s;"
-        cursor.execute(postgres_search_query, (recipe_id,))
+    #     postgres_search_query = "SELECT INGREDIENT FROM ingredient_table WHERE RECIPE_ID=%s;"
+    #     cursor.execute(postgres_search_query, (recipe_id,))
 
-        ingredients = cursor.fetchall()
+    #     ingredients = cursor.fetchall()
 
 
-        print("Succefully retrieved all Ingredients. Printing them now \n\n")
-        print(ingredients)
-        print("\n\n")
+    #     print("Succefully retrieved all Ingredients. Printing them now \n\n")
+    #     print(ingredients)
+    #     print("\n\n")
 
-    except (Exception, psycopg2.Error) as error :
-        if(connection):
-            print("fuuuuck kfkkkfkf", error)
+    # except (Exception, psycopg2.Error) as error :
+    #     if(connection):
+    #         print("fuuuuck kfkkkfkf", error)
     
     try:
         connection = psycopg2.connect(user = constants.DB_USER,
@@ -329,26 +364,31 @@ def get_full_recipe(recipe_id: int):
             print("PostgreSQL connection is closed")
     
     recipe_map = {}
-    print(recipe[0][1])
-    print("gahioawrhowRHG'OIWARHG'OIWERAHG'EAWROHGwroihgwrghrpwgvhirghRIWGH'AWERIGHWRAGwrighaegbaegjb'seriojgaewrghnveargvbha;e/roigvhaerwolighneoa;rihbg")
-    print(ingredients[1][0])
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
+    print(recipe[0])
+    #print("gahioawrhowRHG'OIWARHG'OIWERAHG'EAWROHGwroihgwrghrpwgvhirghRIWGH'AWERIGHWRAGwrighaegbaegjb'seriojgaewrghnveargvbha;e/roigvhaerwolighneoa;rihbg")
+    #print(ingredients[1][0])
 
-    recipe_map['title'] = recipe[0][1]
-    recipe_map['directions'] = recipe[0][2]
-    recipe_map['img_link'] = recipe[0][3]
-    recipe_map['prep_time'] = recipe[0][4]
-    recipe_map['total_time'] = recipe[0][5]
-    recipe_map['cook_time'] = recipe[0][6]
-    recipe_map['calories'] = recipe[0][7]
-    recipe_map['rating'] = recipe[0][8]
-    recipe_map['servings'] = recipe[0][9]
-    recipe_map['author'] = recipe[0][10]
-    recipe_map['src'] = recipe[0][11]
-    recipe_map['quick_description'] = recipe[0][12]
-    recipe_map['chef_notes'] = recipe[0][13]
-    recipe_map['url'] = recipe[0][14]
     recipe_map['recipe_id'] = recipe_id
-    recipe_map['ingredients'] = ingredients #SENDING IN A LIST OF TUPLES
+    recipe_map['title'] = recipe[0][1]
+    recipe_map['ingredients'] = recipe[0][2] #SENDING IN A LIST OF TUPLES
+    recipe_map['ingredient_tags'] = recipe[0][3]
+    recipe_map['directions'] = recipe[0][4]
+    recipe_map['img_link'] = recipe[0][5]
+    recipe_map['prep_time'] = recipe[0][6]
+    recipe_map['total_time'] = recipe[0][7]
+    recipe_map['cook_time'] = recipe[0][8]
+    recipe_map['inactive_time'] = recipe[0][9]
+    recipe_map['calories'] = recipe[0][10]
+    recipe_map['rating'] = recipe[0][11]
+    recipe_map['servings'] = recipe[0][12]
+    recipe_map['author'] = recipe[0][13]
+    recipe_map['src'] = recipe[0][14]
+    recipe_map['quick_description'] = recipe[0][15]
+    recipe_map['chef_notes'] = recipe[0][16]
+    recipe_map['url'] = recipe[0][17]
+    recipe_map['num_of_ingredients'] = recipe[0][18]
+    recipe_map['level'] = recipe[0][19]
 
     print(recipe_map)
     return recipe_map
@@ -394,9 +434,11 @@ def main():
             "total_time": '7 Days',
             "prep_time": '30 minutes',
             "cook_time": '7 Days',
-            "rating": 4.8,
-            "servings": 25,
-            "calories": 100,
+            "rating": '4.8',
+            "servings": '25',
+            "calories": '100',
+            "inactive_time": '',
+            "level": '',
             "ingredients": ['25 Roma Tomatoes','1 Quarte Olive Oil','1 Clove of Garlic','2 tablespoons of Spices'],
             "ingredient_tags": ['Roma Tomatoes','Olive Oil', 'Garlic','Spices'],
             "directions": 'sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss',
@@ -415,6 +457,8 @@ def main():
             "rating": 4.8,
             "servings": 25,
             "calories": 100,
+            "inactive_time": '',
+            "level": '',
             "ingredients": ['1 ton Pasta Sauce','1 Kilogram Olive Oil','1 Ton of Garlic','2 tablespoons of Spices', 'Water', 'Pasta'],
             "ingredient_tags": ['Pasta Sauce','Olive Oil', 'Garlic','Spices', 'Water', 'Pasta'],
             "directions": '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',
@@ -433,6 +477,8 @@ def main():
             "rating": 4.8,
             "servings": 25,
             "calories": 100,
+            "inactive_time": '',
+            "level": '',
             "ingredients": ['1 Seaweed Water','1 Ton of Garlic','2 tablespoons of Spices', '2 kg Water', '1 ton Noodles'],
             "ingredient_tags": ['Seaweed Water','Olive Oil', 'Garlic','Spices', 'Water', 'Noodles'],
             "directions": '&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',
@@ -454,6 +500,6 @@ def main():
     print("\n\n\n SEARCH Title 2 \n")
     search_by_title("Miso")
 
-#if __name__ == "__main__":
-    #main()
+if __name__ == "__main__":
+    main()
 

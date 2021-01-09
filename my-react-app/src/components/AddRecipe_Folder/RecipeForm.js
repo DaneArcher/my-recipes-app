@@ -5,6 +5,7 @@ import './RecipeForm.css'
 
 
 export const RecipeForm = ({recipe, handleChange, addIngredient, deleteIngredient}) =>{
+    console.log('recipe',recipe)
     return(
         <>
             <div className='form-title'>
@@ -28,13 +29,17 @@ export const RecipeForm = ({recipe, handleChange, addIngredient, deleteIngredien
                 <textarea name='quick_description' value={recipe.quick_description} onChange={handleChange} placeholder='Toasted tortillas topped with flavorful black beans and fresh vegetables make a quick and delicious...'/>
             </div>
             <div className='descriptors'>
+                <label>Difficulty</label>
+                <input name='level' value={recipe.level} onChange={handleChange} placeholder='easy, medium, hard, butwhytho'/>
                 <label>Total Time</label>
                 <input name='total_time' value={recipe.total_time} onChange={handleChange} placeholder='X Hours or X Minutes'/>
                 <label>Cook Time</label>
                 <input name='cook_time' value={recipe.cook_time} onChange={handleChange} placeholder='X Hours or X Minutes'/>
                 <label>Prep Time</label>
                 <input name='prep_time' value={recipe.prep_time} onChange={handleChange} placeholder='X Hours or X Minutes'/>
-                <label>Searvings</label>
+                <label>Inactive Time</label>
+                <input name='inactive_time' value={recipe.inactive_time} onChange={handleChange} placeholder='X Hours or X Minutes'/>
+                <label>Servings</label>
                 <input name='servings' value={recipe.servings} onChange={handleChange} placeholder='4'/>
                 <label>Calories Per Serving</label>
                 <input name='calories' value={recipe.calories} onChange={handleChange} placeholder='375'/>

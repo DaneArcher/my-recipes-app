@@ -18,7 +18,7 @@ class Card extends Component{
         return(
             <div className='card'>
                 <div className='img-container'>
-                    <img src={this.props.img} alt='Hot Coco'/>
+                    <img src={this.props.img_link} alt={this.props.title}/>
                 </div>
                 <h3 className='card-title'>{this.props.title}</h3>
                 <p className='card-discription'>{this.props.quick_description}</p>
