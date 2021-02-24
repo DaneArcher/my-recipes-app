@@ -14,7 +14,9 @@ function App() {
         <NavBar/>
         <Switch>
           <Route exact path='/' component={HomePage}/>
-          <Route path='/SearchResults' component={Search}/>
+          {/*<Route path='/SearchResults' component={Search}/>*/}
+          <Route path='/SearchResults/title/:title' component={Search}/>
+          <Route path='/SearchResults/ingredients/:ingredients' component={Search}/>
           <Route path='/add' component={AddRecipe}/>
           <Route path='/recipe/:recipe_id' component={DisplayRecipe}/> 
         </Switch>      
