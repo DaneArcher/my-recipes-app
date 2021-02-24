@@ -38,16 +38,38 @@ class HomePage extends Component{
     toSearchResults = () =>{
         let {radio_value} = this.state
         if(radio_value === 'Title'){
-            this.props.history.push('/SearchResults',{name: 'title', data: this.state.title})
+            //this.props.history.push('/SearchResults',{name: 'title', data: this.state.title})
+            let link = '/SearchResults/title/'
+            link = link.concat(this.state.title)
+            this.props.history.push(link)
         }
         else{
             //radio_value === 'Ingredient'
-            this.props.history.push('/SearchResults',{name: 'ingredients', data: this.state.ingredients})
+            //this.props.history.push('/SearchResults',{name: 'ingredients', data: this.state.ingredients})
+            let {ingredients} = this.state 
+            let link = '/SearchResults/ingredients/'
+            let ingredient_str = ''
+            for(let i = 0; i < ingredients.length; i++){
+                ingredient_str = ingredient_str.concat(ingredients[i], ',')
+            }
+            ingredient_str = ingredient_str.slice(0, -1)
+            link = link.concat(ingredient_str)
+
+            this.props.history.push(link)
         }
 
     }
     componentDidMount(){
-        console.log(Object.keys(this.props.match.params).length === 0)
+        //console.log(Object.keys(this.props.match.params).length === 0)
+        console.log(this.props)
+        console.log(this.props.location.key)
+
+        let key = (this.props.location.key ? this.props.location.key : (this.props.history.location.key ? this.props.history.location.key : undefined))
+        
+        if(key === undefined){
+            this.props.history.replace('/')
+            console.log(this.props.location.key)
+        }
     }
     render(){
         let {radio_value} = this.state
