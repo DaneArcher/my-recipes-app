@@ -28,10 +28,13 @@ class Search extends Component{
     componentDidMount(){
         console.log('in search component did mount')
         console.log(this.props)
+        let {pathname} = this.props.location
+        pathname = pathname.split('/')[2]
+        //'/SearchResults/title/${this.state.title}'
         //is setting the State needed?? because the data is saved in that location state
-        let name = this.props.location.state.name
-        if(name ==='title'){
-            let title = this.props.location.state.data
+        //let name = this.props.location.state.name
+        if(pathname ==='title'){
+            let title = this.props.match.params.title
             this.setState({
                 title: title
             })
@@ -49,18 +52,20 @@ class Search extends Component{
         }
         else{
             //name === 'ingredients'
-            let ingredients = this.props.location.state.data            
+            let ingredients = this.props.match.params.ingredients            
             this.setState({
                 ingredients: ingredients
             })
             
             let link = 'http://localhost:5000/search?ingredients='
+            /*
             let ingredient_str = ''
             for(let i = 0; i < ingredients.length; i++){
                 ingredient_str = ingredient_str.concat(ingredients[i], ',')
             }
             ingredient_str = ingredient_str.slice(0, -1)
-            link = link.concat(ingredient_str)
+            */
+            link = link.concat(ingredients)
             
             fetch(link)
             .then(response => response.json())
