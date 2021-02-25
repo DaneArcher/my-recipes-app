@@ -70,6 +70,9 @@ class HomePage extends Component{
             this.props.history.replace('/')
             console.log(this.props.location.key)
         }
+        else{
+            //set doo set up 
+        }
     }
     render(){
         let {radio_value} = this.state
