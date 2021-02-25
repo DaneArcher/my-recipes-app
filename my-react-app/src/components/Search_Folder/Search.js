@@ -23,107 +23,58 @@ class Search extends Component{
         ingredients: [],
         recipe_list: [],
         recipe_id: 0,
-        step: 1
     }
     componentDidMount(){
-        console.log('in search component did mount')
-        console.log(this.props)
+
+        let key = (this.props.location.key ? this.props.location.key : (this.props.history.location.key ? this.props.history.location.key : undefined))
         let {pathname} = this.props.location
-        pathname = pathname.split('/')[2]
-        //'/SearchResults/title/${this.state.title}'
-        //is setting the State needed?? because the data is saved in that location state
-        //let name = this.props.location.state.name
-        if(pathname ==='title'){
-            let title = this.props.match.params.title
-            this.setState({
-                title: title
-            })
-            
-            let link = 'http://localhost:5000/search?title='
-            link = link.concat(title)
-
-            fetch(link)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    recipe_list: data.recipes
-                })
-            })
+        if(key === undefined){
+            //check that url is propper then do replace
+            this.props.history.replace(pathname)
         }
         else{
-            //name === 'ingredients'
-            let ingredients = this.props.match.params.ingredients            
-            this.setState({
-                ingredients: ingredients
-            })
-            
-            let link = 'http://localhost:5000/search?ingredients='
-            /*
-            let ingredient_str = ''
-            for(let i = 0; i < ingredients.length; i++){
-                ingredient_str = ingredient_str.concat(ingredients[i], ',')
-            }
-            ingredient_str = ingredient_str.slice(0, -1)
-            */
-            link = link.concat(ingredients)
-            
-            fetch(link)
-            .then(response => response.json())
-            .then(data => {
+            //set doo set up 
+            pathname = pathname.split('/')[2]
+            //'/SearchResults/title/${this.state.title}'
+            //is setting the State needed?? because the data is saved in that location state
+            if(pathname ==='title'){
+                let title = this.props.match.params.title
                 this.setState({
-                    recipe_list: data.recipes
+                    title: title
                 })
-            })
+                
+                let link = 'http://localhost:5000/search?title='
+                link = link.concat(title)
+    
+                fetch(link)
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        recipe_list: data.recipes
+                    })
+                })
+            }
+            else{
+                //name === 'ingredients'
+                let ingredients = this.props.match.params.ingredients            
+                this.setState({
+                    ingredients: ingredients
+                })
+                
+                let link = 'http://localhost:5000/search?ingredients='
+                link = link.concat(ingredients)
+                
+                fetch(link)
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({
+                        recipe_list: data.recipes
+                    })
+                })
+            }
         }
-        console.log("leaving component did mount")
-    }
-    nextStep = () =>{
-        let {step} = this.state
-        this.setState({
-            step: step + 1
-        })
-    }
-    previousStep = () =>{
-		const {step} = this.state
-		this.setState({
-			step: step - 1
-		})	
-    }   
-    /* 
-    get_recipes = (name) =>{
-        if (name === 'title'){
-            let{title} = this.state
-            let link = 'http://localhost:5000/search?title='
-            link = link.concat(title)
 
-            fetch(link)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    recipe_list: data.recipes
-                })
-            })
-        }
-        else{
-            //radio_value === 'ingredient'
-            let{ingredients} = this.state
-            let link = 'http://localhost:5000/search?ingredients='
-            let ingredient_str = ''
-            for(let i = 0; i < ingredients.length; i++){
-                ingredient_str = ingredient_str.concat(ingredients[i], ',')
-            }
-            ingredient_str = ingredient_str.slice(0, -1)
-            link = link.concat(ingredient_str)
-            
-            fetch(link)
-            .then(response => response.json())
-            .then(data => {
-                this.setState({
-                    recipe_list: data.recipes
-                })
-            })
-        }
-    }*/
+    } 
     showRecipe = (id) =>{
         // console.log(id)
         // this.setState({
@@ -136,55 +87,33 @@ class Search extends Component{
         this.props.history.push('/recipe/' + id)
     }
     render(){
-        const {step} = this.state
         //console.log(this.props)
-        switch(step){
-            case 1:
-                console.log("in case 1 render")
-                let {recipe_list} = this.state
-                console.log(recipe_list)
-                let results = recipe_list.length ? (
-                    recipe_list.map((recipe,index) =>{
-                        return(
-                            <div key={index}>
-                                <div onClick={() => {this.showRecipe(recipe.recipe_id)}}>
-                                    <Card img_link={recipe.img_link}
-                                        title={recipe.title}
-                                        quick_description={recipe.quick_description}
-                                        rating={recipe.rating}
-                                        total_time={recipe.total_time}/>
-                                </div>
-                            </div>
-                        )
-                    })
-                ):(
-                    <p>loading list</p>
-                )
+        let {recipe_list} = this.state
+        console.log(recipe_list)
+        let results = recipe_list.length ? (
+            recipe_list.map((recipe,index) =>{
                 return(
-                    <div>
-                        <div style={{display:'flex'}}>
-                            {results}
+                    <div key={index}>
+                        <div onClick={() => {this.showRecipe(recipe.recipe_id)}}>
+                            <Card img_link={recipe.img_link}
+                                title={recipe.title}
+                                quick_description={recipe.quick_description}
+                                rating={recipe.rating}
+                                total_time={recipe.total_time}/>
                         </div>
                     </div>
                 )
-            case 2:
-                //let {id} = this.state
-                return(
-                    <div>
-                        {/*<DisplayRecipe id={this.state.recipe_id}/>*/}
-                        {/*this.props.history.push('/recipe/{id}') */}
-                        {/*if recipe is complete */}
-                        {/*this.props.history.push('/recipe/{id}',this.state.recipe_list[index]) */}
-                        {/*<button onClick={this.previousStep}>previous</button>*/}
-                    </div>
-                )
-            default:
-                //https://eslint.org/docs/rules/default-case
-                return(                    
-                    <p>In default case COME BACK TO THIS AND LEARN MORE</p>
-                )
-        }
-
+            })
+        ):(
+            <p>loading list</p>
+        )
+        return(
+            <div>
+                <div style={{display:'flex'}}>
+                    {results}
+                </div>
+            </div>
+        )
     }
 }
 
