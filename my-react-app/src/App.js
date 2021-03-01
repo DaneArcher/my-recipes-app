@@ -5,6 +5,7 @@ import Search from './components/Search_Folder/Search'
 import AddRecipe from './components/AddRecipe_Folder/AddRecipe'
 import HomePage from './components/HomePage_Folder/HomePage'
 import DisplayRecipe from './components/DisplayRecipe_Folder/DisplayRecipe';
+import GlobalStateContextProvider from './components/Context_Folder/GlobalStateContext';
 
 function App() {
  
@@ -13,12 +14,14 @@ function App() {
       <div className='App'>
         <NavBar/>
         <Switch>
-          <Route exact path='/' component={HomePage}/>
-          {/*<Route path='/SearchResults' component={Search}/>*/}
-          <Route path='/SearchResults/title/:title' component={Search}/>
-          <Route path='/SearchResults/ingredients/:ingredients' component={Search}/>
-          <Route path='/add' component={AddRecipe}/>
-          <Route path='/recipe/:recipe_id' component={DisplayRecipe}/> 
+          <GlobalStateContextProvider>
+            <Route exact path='/' component={HomePage}/>
+            {/*<Route path='/SearchResults' component={Search}/>*/}
+            <Route path='/SearchResults/title/:title' component={Search}/>
+            <Route path='/SearchResults/ingredients/:ingredients' component={Search}/>
+            <Route path='/add' component={AddRecipe}/>
+            <Route path='/recipe/:recipe_id' component={DisplayRecipe}/> 
+          </GlobalStateContextProvider>
         </Switch>      
       </div>
     </BrowserRouter>
