@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 //import { Redirect } from 'react-router-dom'
 import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
+import { GlobalStateContext } from '../Context_Folder/GlobalStateContext'
 import './HomePage.css'
 
 class HomePage extends Component{
+    static contextType = GlobalStateContext
     state = {
         radio_value: 'Title',
         title: '',
@@ -11,12 +13,14 @@ class HomePage extends Component{
         ingredients: []
     }
     handleChange = (input) => e =>{
+        let browserkey = this.props.location.key
         this.setState({[input]: e.target.value})
+        this.context.addToHistory(browserkey,input,e.target.value)
     }
     keyPress = (e) =>{
         if(e.keyCode === 13){
             if(e.target.name === 'Title'){
-                this.props.history.push('/SearchResults',{name: 'title', data: this.state.title})
+                this.toSearchResults()
             }
             else{
                 this.addIngredient()
@@ -24,16 +28,21 @@ class HomePage extends Component{
         }    
     }
     addIngredient = () =>{
+        let browserkey = this.props.location.key
         let ingredients = [...this.state.ingredients, this.state.ingredient];
         this.setState({
             ingredients: ingredients,
             ingredient: ''
         })
+        this.context.addToHistory(browserkey,'ingredients',ingredients)
+        this.context.addToHistory(browserkey,'ingredient','')
     }
     deleteIngredient = (index) =>{
+        let browserkey = this.props.location.key
         let {ingredients} = this.state
         ingredients.splice(index,1)
         this.setState({ingredients})
+        this.context.addToHistory(browserkey,'ingredients',ingredients)
     }
     toSearchResults = () =>{
         let {radio_value} = this.state
@@ -61,22 +70,35 @@ class HomePage extends Component{
     }
     componentDidMount(){
         //console.log(Object.keys(this.props.match.params).length === 0)
-        console.log(this.props)
-        console.log(this.props.location.key)
+        //console.log(this.props)
+        //console.log(this.props.location.key)
 
         let key = (this.props.location.key ? this.props.location.key : (this.props.history.location.key ? this.props.history.location.key : undefined))
         
         if(key === undefined){
             this.props.history.replace('/')
-            console.log(this.props.location.key)
+            //console.log(this.props.location.key)
         }
         else{
             //set doo set up 
+            let isInHistory = this.context.restoreHistory(key)
+            if(isInHistory !== false){
+                //I think this would work
+                this.setState({
+                    ...isInHistory
+                })
+            }
+            else{
+                this.context.pushToHistory(key,this.state)
+            }
         }
     }
     render(){
         let {radio_value} = this.state
         //console.log(this.props)
+        console.log(this.props.location.key)
+        console.log(this.context.contextState.historyStack)
+        console.log(this.state)
         return(
             <div className='search-container'>
                 <div className='search-box'>

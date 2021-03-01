@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 //import './Search.css'
 //import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
 import Card from '../Card_Folder/Card'
+import { GlobalStateContext } from '../Context_Folder/GlobalStateContext'
 //import DisplayRecipe from '../DisplayRecipe_Folder/DisplayRecipe'
 
 /**
@@ -18,6 +19,8 @@ import Card from '../Card_Folder/Card'
  */
 
 class Search extends Component{
+    static contextType = GlobalStateContext
+    //i don't think i need recipe_id in state but check it out later and title and ingredients
     state = {
         title: '',
         ingredients: [],
@@ -34,43 +37,58 @@ class Search extends Component{
         }
         else{
             //set doo set up 
-            pathname = pathname.split('/')[2]
-            //'/SearchResults/title/${this.state.title}'
-            //is setting the State needed?? because the data is saved in that location state
-            if(pathname ==='title'){
-                let title = this.props.match.params.title
+            let isInHistory = this.context.restoreHistory(key)
+            if(isInHistory !== false){
+                console.log('in restore')
+                //I think this would work
                 this.setState({
-                    title: title
-                })
-                
-                let link = 'http://localhost:5000/search?title='
-                link = link.concat(title)
-    
-                fetch(link)
-                .then(response => response.json())
-                .then(data => {
-                    this.setState({
-                        recipe_list: data.recipes
-                    })
+                    ...isInHistory
                 })
             }
             else{
-                //name === 'ingredients'
-                let ingredients = this.props.match.params.ingredients            
-                this.setState({
-                    ingredients: ingredients
-                })
-                
-                let link = 'http://localhost:5000/search?ingredients='
-                link = link.concat(ingredients)
-                
-                fetch(link)
-                .then(response => response.json())
-                .then(data => {
+                console.log('in fetch')
+                this.context.pushToHistory(key,this.state)
+                pathname = pathname.split('/')[2]
+                //'/SearchResults/title/${this.state.title}'
+                //is setting the State needed?? because the data is saved in that location state
+                if(pathname ==='title'){
+                    let title = this.props.match.params.title
                     this.setState({
-                        recipe_list: data.recipes
+                        title: title
                     })
-                })
+                    
+                    let link = 'http://localhost:5000/search?title='
+                    link = link.concat(title)
+        
+                    fetch(link)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            recipe_list: data.recipes
+                        })
+                        this.context.addToHistory(key,'recipe_list',data.recipes)
+                    })
+                }
+                else{
+                    //name === 'ingredients'
+                    let ingredients = this.props.match.params.ingredients            
+                    this.setState({
+                        ingredients: ingredients
+                    })
+                    
+                    let link = 'http://localhost:5000/search?ingredients='
+                    link = link.concat(ingredients)
+                    
+                    fetch(link)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            recipe_list: data.recipes
+                        })
+                        this.context.addToHistory(key,'recipe_list',data.recipes)
+                    })
+                }
+                console.log(this.state)
             }
         }
 
@@ -81,15 +99,16 @@ class Search extends Component{
         //     recipe_id: id,
         //     step: this.state.step + 1
         // })
-        console.log(id)
-        console.log(typeof id)
+        //console.log(id)
+        //console.log(typeof id)
         id = id.toString()
         this.props.history.push('/recipe/' + id)
     }
     render(){
         //console.log(this.props)
+        console.log(this.context.contextState.historyStack)
         let {recipe_list} = this.state
-        console.log(recipe_list)
+        //console.log(recipe_list)
         let results = recipe_list.length ? (
             recipe_list.map((recipe,index) =>{
                 return(
