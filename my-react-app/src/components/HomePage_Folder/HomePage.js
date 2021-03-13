@@ -76,11 +76,14 @@ class HomePage extends Component{
         let key = (this.props.location.key ? this.props.location.key : (this.props.history.location.key ? this.props.history.location.key : undefined))
         
         if(key === undefined){
-            this.props.history.replace('/')
+            //let pathname = '/SearchResults/title/Miso'
+            //console.log('in key undefined')
+            this.props.history.replace('/reroute',{from: '/'})
             //console.log(this.props.location.key)
         }
         else{
             //set doo set up 
+            //console.log('not in key undefined')
             let isInHistory = this.context.restoreHistory(key)
             if(isInHistory !== false){
                 //I think this would work
@@ -96,9 +99,9 @@ class HomePage extends Component{
     render(){
         let {radio_value} = this.state
         //console.log(this.props)
-        console.log(this.props.location.key)
-        console.log(this.context.contextState.historyStack)
-        console.log(this.state)
+        //console.log(this.props.location.key)
+        //console.log(this.context.contextState.historyStack)
+        //console.log(this.state)
         return(
             <div className='search-container'>
                 <div className='search-box'>
