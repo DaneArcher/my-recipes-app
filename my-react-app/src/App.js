@@ -6,6 +6,7 @@ import AddRecipe from './components/AddRecipe_Folder/AddRecipe'
 import HomePage from './components/HomePage_Folder/HomePage'
 import DisplayRecipe from './components/DisplayRecipe_Folder/DisplayRecipe';
 import GlobalStateContextProvider from './components/Context_Folder/GlobalStateContext';
+import ReRoute from './components/ReRoute';
 
 function App() {
  
@@ -21,6 +22,7 @@ function App() {
             <Route path='/SearchResults/ingredients/:ingredients' component={Search}/>
             <Route path='/add' component={AddRecipe}/>
             <Route path='/recipe/:recipe_id' component={DisplayRecipe}/> 
+            <Route path ='/reroute' component={ReRoute}/>
           </GlobalStateContextProvider>
         </Switch>      
       </div>
