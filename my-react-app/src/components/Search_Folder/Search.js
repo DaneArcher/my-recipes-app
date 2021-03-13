@@ -28,25 +28,27 @@ class Search extends Component{
         recipe_id: 0,
     }
     componentDidMount(){
-
+        console.log('in component did mount')
         let key = (this.props.location.key ? this.props.location.key : (this.props.history.location.key ? this.props.history.location.key : undefined))
         let {pathname} = this.props.location
         if(key === undefined){
+            //console.log('in if')
             //check that url is propper then do replace
+            //console.log(typeof pathname, pathname)
             this.props.history.replace(pathname)
         }
         else{
             //set doo set up 
             let isInHistory = this.context.restoreHistory(key)
             if(isInHistory !== false){
-                console.log('in restore')
+                //console.log('in restore')
                 //I think this would work
                 this.setState({
                     ...isInHistory
                 })
             }
             else{
-                console.log('in fetch')
+                //console.log('in fetch')
                 this.context.pushToHistory(key,this.state)
                 pathname = pathname.split('/')[2]
                 //'/SearchResults/title/${this.state.title}'
@@ -88,7 +90,7 @@ class Search extends Component{
                         this.context.addToHistory(key,'recipe_list',data.recipes)
                     })
                 }
-                console.log(this.state)
+                //console.log(this.state)
             }
         }
 
@@ -106,7 +108,7 @@ class Search extends Component{
     }
     render(){
         //console.log(this.props)
-        console.log(this.context.contextState.historyStack)
+        //console.log(this.context.contextState.historyStack)
         let {recipe_list} = this.state
         //console.log(recipe_list)
         let results = recipe_list.length ? (
