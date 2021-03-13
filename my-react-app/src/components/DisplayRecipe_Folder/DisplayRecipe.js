@@ -35,15 +35,15 @@ class DisplayRecipe extends Component{
         Case 3: Full Recipe is sent through as a prop signifying that DisplayRecipe is being called as a chilled component in someother component set state equal to props.recipe
         Case 4: Error Something went wrong do something
         */
-        console.log(this.props)
+        //console.log(this.props)
         //let recipe_id = this.props.match.params.recipe_id
         //let temp = this.props.match.params.temp 
         let recipe = this.props.recipe
         //console.log(temp)
-        console.log(this.props.recipe)
-        console.log(recipe)
+        //console.log(this.props.recipe)
+        //console.log(recipe)
         //let recipe = this.props.location.state.recipe
-        console.log(recipe !== undefined)
+        //console.log(recipe !== undefined)
         if(recipe !== undefined){
             //make sure it's not recipe.recipe
             this.setState({
@@ -51,7 +51,8 @@ class DisplayRecipe extends Component{
             })
         }
         else{              //if(recipe_id !== null){
-            console.log("inside else")
+            //console.log("inside else")
+            //console.log(this.props)
             //fetch from db                                   && recipe === null
             //display if recipe exist or say recipe does not exist
             //send recipe to the global state
@@ -66,8 +67,8 @@ class DisplayRecipe extends Component{
             fetch(link)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
-                console.log(data.recipe)
+                //console.log(data)
+                //console.log(data.recipe)
                 this.setState({
                     recipe: data.recipe
                 })
