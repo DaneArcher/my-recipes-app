@@ -1,6 +1,6 @@
 from FNscraping import scraper
 from flask import Flask, jsonify, request
-from CreatePGDB import insert, search_by_ingredients, search_by_title, get_full_recipe
+from CreatePGDB import insert, search_by_ingredients, search_by_title, get_full_recipe, edit_recipe, delete_recipe
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def add_recipes():
 
     if(insert(recipe_data)):
         return "response is good"
-    return "responce failed"
+    return "response failed"
  
 @app.route('/search', methods=['GET'])
 def search():
@@ -69,6 +69,25 @@ def test():
     print(type(temp))
     return 'temp'
 
+@app.route('/edit', methods=['POST'])
+def edit():
+    #/test?temp=1000
+    recipe_data = request.get_json()
+    print(recipe_data)
+
+    if(edit_recipe(recipe_data)):
+        return "response is good"
+    return "response failed"
+
+@app.route('/delete', methods=['POST'])
+def delete():
+    #/test?temp=1000
+    recipe_id = request.get_json()
+    print(recipe_id)
+
+    if(delete_recipe(recipe_id)):
+        return "response is good"
+    return "response failed"
 
 if __name__ == "__main__":
     app.run(debug=True)

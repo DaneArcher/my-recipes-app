@@ -3,7 +3,9 @@ import './DisplayRecipe.css'
 
 class DisplayRecipe extends Component{
     state = {
-        recipe: null
+        recipe: null,
+        edit_button: null,
+        delete_button: null
     }
     componentDidMount(){
         /*
@@ -62,6 +64,10 @@ class DisplayRecipe extends Component{
             let link = 'http://localhost:5000/full_recipe?recipe_id='
             // let recipe_id = this.props.recipe_id        
             link = link.concat(recipe_id)
+            let editR = '/edit/'
+            editR = editR.concat(this.props.match.params.recipe_id)
+            // let deleteR = "/delete/"
+            // deleteR = deleteR.concat(this.props.match.params.recipe_id)
 
             fetch(link)
             .then(response => response.json())
@@ -69,7 +75,27 @@ class DisplayRecipe extends Component{
                 console.log(data)
                 console.log(data.recipe)
                 this.setState({
-                    recipe: data.recipe
+                    recipe: data.recipe,
+                    edit_button: <button onClick= {()=>{this.props.history.push(editR,{recipe: this.state.recipe})}}>Edit Recipe</button>,
+                    delete_button: <button onClick= {()=>{
+
+                       
+                        fetch('http://localhost:5000/delete', {
+                            method: 'POST', // or 'PUT'
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(recipe_id),
+                            }).then(response => response.text())
+                            .then(text => {
+                                console.log(text)
+                                console.log("HELP")
+                                if(text === "response is good"){
+                                    this.props.history.push("/",{recipe_id: recipe_id})
+                                }
+                        })		 
+                    }}>Delete Recipe</button>,
+
                 })
             })
         }
@@ -171,7 +197,9 @@ class DisplayRecipe extends Component{
     }
 
     render(){
+        // recipe seems to not have the id in it need to FIX
         let {recipe} = this.state
+        
         if(recipe != null){
             let packaged_data = this.checkRecipe()
             return(
@@ -218,12 +246,16 @@ class DisplayRecipe extends Component{
                     <br/>
                     <br/>
                     {packaged_data.url}
+                    {this.state.edit_button}
+                    {this.state.delete_button}
+                    <h1>testing delete</h1>
+                    
                 </div>
             )
         }
         else{
             return(
-                <p>Loading Recipe Please wait</p>
+                <p>Loading Recipe Please wait</p> //add loading circle here and CENTER it
             )
         }
     }
