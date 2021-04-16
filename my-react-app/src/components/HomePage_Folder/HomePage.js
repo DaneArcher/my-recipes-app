@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-//import { Redirect } from 'react-router-dom'
 import DisplayIngredients from '../AddRecipe_Folder/display_ingredients'
 import './HomePage.css'
-
+/*
+    need to have better coding styles
+*/
 class HomePage extends Component{
     state = {
         radio_value: 'Title',
@@ -46,12 +47,8 @@ class HomePage extends Component{
         }
 
     }
-    componentDidMount(){
-        console.log(Object.keys(this.props.match.params).length === 0)
-    }
     render(){
         let {radio_value} = this.state
-        //console.log(this.props)
         return(
             <div className='search-container'>
                 <div className='search-box'>
