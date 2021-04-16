@@ -10,7 +10,6 @@ salad = "https://www.foodnetwork.com/recipes/food-network-kitchen/the-best-caesa
 def parser_text(tag, class_name, my_soup):
     resource_list = []
     resource = my_soup.find_all(tag, class_=class_name)
-    #print(resource)
     for i in resource:
         resource_list.append(i.get_text())
     return resource_list
@@ -30,8 +29,8 @@ def get_info(my_soup):
     #now i will split it up 
     info_name = parser_text("span", "o-RecipeInfo__a-Headline", recipe_info[0])
     info = parser_text("span", "o-RecipeInfo__a-Description", recipe_info[0])
-    print(info_name)
-    print(info)
+    # print(info_name)
+    # print(info)
     return [info_name, info]
     #need to add check to see what info we actually got not all food network recipies have a complete info section
     #and some info have a different class name.... wierd that they don't conform
@@ -41,8 +40,7 @@ def get_ingredents(my_soup):
     ingredient_list = []
 
     ingredient_objects = my_soup.find_all(['span','h6'], attrs={"class" : re.compile('^o-Ingredients__a-')})
-    #ingredient_objects = ingredient_objects[4:]
-     # The following for loop is for identifying the text from the tags and checking
+    # The following for loop is for identifying the text from the tags and checking
     for i in ingredient_objects:
         if i.get_text() != "":
             if str(i)[0:3] == "<h6":
@@ -51,11 +49,8 @@ def get_ingredents(my_soup):
             else:
                 ingredient_list.append(i.get_text().strip())
 
-
-   
     ingredient_list = ingredient_list[2:-2]
-    #ingredient_list = ingredient_list[:-2]
-    print(ingredient_list)
+    #print(ingredient_list)
     return ingredient_list
 
 def get_directions(my_soup):
@@ -73,17 +68,17 @@ def get_total_time(my_soup):
     return total_time[0] #there are two of them, just returns one
 def get_chef_notes(my_soup):
     chef_notes = parser_text("p", "o-ChefNotes__a-Description", my_soup)
-    print(type(chef_notes))
+    #print(type(chef_notes))
     if chef_notes:
         return chef_notes[0]
 def get_quick_description(my_soup):
     quick_desc_html = parser_html("div", "o-AssetDescription__a-Description", my_soup)
-    print(quick_desc_html)
+    #print(quick_desc_html)
     if quick_desc_html:
         quick_description = parser_text("span", "originalText", quick_desc_html[0])
 
         if quick_description:
-            print(quick_description)
+            #print(quick_description)
             return quick_description[0]
     
 
@@ -91,8 +86,7 @@ def get_author(my_soup):
     author_html = parser_html("span", "o-Attribution__a-Name", my_soup)
 
     author = author_html[0].find('a').get_text()
-    print("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")
-    print(author)
+    #print(author)
     return author
 
 
@@ -116,8 +110,6 @@ def scraper(food_link):
     if get_total_time(soup):
         completed_recipe_info['total_time'] = get_total_time(soup)
     count = 0
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    #print(completed_recipe_info['info'][0])
     for i in completed_recipe_info['info'][0]:
         if i == "Prep:":
             completed_recipe_info['prep_time'] = completed_recipe_info['info'][1][count]
@@ -131,9 +123,7 @@ def scraper(food_link):
             completed_recipe_info['inactive_time'] = completed_recipe_info['info'][1][count]
 
         count += 1
-    # completed_recipe_info['prep_time'] = completed_recipe_info['info'][1][2]
-    # completed_recipe_info['cook_time'] = completed_recipe_info['info'][1][3]
-    # completed_recipe_info['servings'] = completed_recipe_info['info'][1][4]
+
     if get_chef_notes(soup):
         completed_recipe_info['chef_notes'] = get_chef_notes(soup)
     if get_quick_description(soup):
@@ -141,14 +131,12 @@ def scraper(food_link):
     if get_author(soup):
         completed_recipe_info['author'] = get_author(soup)
     ext = tldextract.extract(food_link)
-    print(ext[1])
+    #print(ext[1])
     domain = ""
     if ext[1] == "foodnetwork":
         domain =  "Food Network"
     if domain: 
         completed_recipe_info['src'] = domain
-
-    #print(completed_recipe_info)
 
     return completed_recipe_info
 
