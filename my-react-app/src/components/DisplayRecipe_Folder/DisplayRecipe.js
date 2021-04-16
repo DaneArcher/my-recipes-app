@@ -164,7 +164,6 @@ class DisplayRecipe extends Component{
                     {packaged_data.url}
                     {this.state.edit_button}
                     {this.state.delete_button}
-                    <h1>testing delete</h1>
                     
                 </div>
             )
