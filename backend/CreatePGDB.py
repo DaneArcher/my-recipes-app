@@ -43,47 +43,6 @@ def setup():
     except (Exception, psycopg2.DatabaseError) as error :
         print ("Error while creating recipe_table", error)
 
-    
-    # try:
-    #     cursor = connection.cursor()
-
-
-    #     create_table_query = '''CREATE TABLE ingredient_table
-    #     (
-    #         RECIPE_ID      INT     NOT NULL,
-    #         INGREDIENT     TEXT    NOT NULL,
-    #         PRIMARY KEY (RECIPE_ID,INGREDIENT)
-    #     ); '''
-    #     cursor.execute(create_table_query)
-    #     connection.commit()
-    #     print("Ingredient Table created succesffully in PostegreSQL")
-
-
-    # except (Exception, psycopg2.DatabaseError) as error :
-    #     print ("Error while creating ingredient_table", error)
-
-    # try:
-    #     cursor = connection.cursor()
-
-    #     create_table_query = '''CREATE TABLE result_card_table AS
-    #         SELECT RECIPE_ID, TITLE, TOTAL_TIME, IMG_LINK, QUICK_DESCRIPTION, RATING 
-    #         FROM recipe_table; '''
-        
-    #     cursor.execute(create_table_query)
-
-    #     cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_recipe_id FOREIGN KEY (RECIPE_ID) REFERENCES recipe_table(RECIPE_ID);")
-    #     # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_title FOREIGN KEY (TITLE) REFERENCES recipe_table(TITLE);")
-    #     # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_total_time FOREIGN KEY (TOTAL_TIME) REFERENCES recipe_table(TOTAL_TIME);")
-    #     # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_img_link FOREIGN KEY (IMG_LINK) REFERENCES recipe_table(IMG_LINK);")
-    #     # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_quick_description FOREIGN KEY (QUICK_DESCRIPTION) REFERENCES recipe_table(QUICK_DESCRIPTION);")
-    #     # cursor.execute("ALTER TABLE result_card_table ADD CONSTRAINT fk_rating FOREIGN KEY (RATING) REFERENCES recipe_table(RATING);")
-
-    #     connection.commit()
-    #     print("Result Card Table created succesffully in PostegreSQL")
-
-    # except (Exception, psycopg2.DatabaseError) as error :
-    #     print ("Error while creating result_card_table", error)
-
     try:
         cursor = connection.cursor()
 
@@ -130,14 +89,11 @@ def setup():
             if(connection):
                 cursor.close()
                 connection.close()
-                print("PostgreSQL connection is closed")
 
 
 def insert(recipe: dict) -> bool:
     ingredient_tags = recipe['ingredient_tags']
     ingredient_list = recipe['ingredients']
-    #print(type(ingredient_list))
-    #print(ingredient_list)
     connection = 0
     recipe_id = 0
     try:
@@ -153,11 +109,10 @@ def insert(recipe: dict) -> bool:
                                     RATING, SERVINGS, AUTHOR, SOURCE, QUICK_DESCRIPTION, CHEF_NOTES, SOURCE_URL, NUM_INGREDIENTS, LEVEL) 
                                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING RECIPE_ID;"""
         record_to_insert = (recipe['title'], ingredient_list, ingredient_tags, recipe['directions'], recipe['img_link'], recipe['prep_time'], recipe['total_time'], recipe['cook_time'], recipe['inactive_time'], int(recipe['calories']), float(recipe['rating']), recipe['servings'], recipe['author'], recipe['src'], recipe['quick_description'],recipe['chef_notes'], recipe['url'], len(ingredient_list), recipe['level'])
-        #print(record_to_insert)
+
         cursor.execute(postgres_insert_query, record_to_insert)
         recipe_id = cursor.fetchone()[0]
-        print("@#^(@#(")
-        print(recipe_id)
+
         connection.commit()
         print (recipe_id, "Record inserted successfully into recipe table")
         insert_into_ingredient_search_table(ingredient_tags, recipe_id)
@@ -167,59 +122,18 @@ def insert(recipe: dict) -> bool:
             print("Failed to insert record into mobile table", error)
             return False
 
-    
-    
-    # try:    
-    #     # for ingredient in ingredient_list:
-    #     #     try:
-    #     #         cursor = connection.cursor()  
-    #     #         postgres_insert_query = '''INSERT INTO ingredient_table (INGREDIENT, RECIPE_ID) VALUES (%s,%s);'''
-    #     #         record_to_insert = (ingredient,recipe_id)
-    #     #         cursor.execute(postgres_insert_query,record_to_insert)
-    #     #         connection.commit()
-    #     #         string = ingredient + " was successfully inserted into ingredient table"
-    #     #         print(string)
-    #     #     except (Exception, psycopg2.Error) as error :
-    #     #         if(connection):
-    #     #             print("Failed to insert record into ingredient_table", error)
-    #     cursor = connection.cursor()
-    #     postgres_insert_query = '''INSERT INTO result_card_table SELECT RECIPE_ID, TITLE, TOTAL_TIME, IMG_LINK, QUICK_DESCRIPTION, RATING
-    #                                 FROM recipe_table WHERE recipe_table.RECIPE_ID = (%s);'''
-    #     id_to_insert = (recipe_id,)
-    #     cursor.execute(postgres_insert_query,id_to_insert)
-    #     connection.commit()
-
-    #     for ingredient in ingredient_tag_list:
-    #         if ingredient != "":
-    #             try:
-    #                 cursor = connection.cursor()  
-    #                 postgres_insert_query = '''INSERT INTO ingredient_search_table (INGREDIENT, RECIPE_ID) VALUES (%s,%s);'''
-    #                 record_to_insert = (ingredient,recipe_id)
-    #                 cursor.execute(postgres_insert_query,record_to_insert)
-    #                 connection.commit()
-    #                 string = ingredient + " was successfully inserted into ingredient table"
-    #                 print(string)
-    #             except (Exception, psycopg2.Error) as error :
-    #                 if(connection):
-    #                     print("Failed to insert record into ingredient_table", error)
-    # except (Exception, psycopg2.Error) as error :
-    #     if(connection):
-    #         print("fuuuuck", error)
-    #         return False
-
     finally:
         #closing database connection.
         if(connection):
             cursor.close()
             connection.close()
-            print("PostgreSQL connection is closed")
     return True
 
 
 def search_by_title(recipe_name: str):
     connection = ""
     json_list = []
-    print("Line 181")
+
     try:
         connection = psycopg2.connect(user = constants.DB_USER,
                                         password = constants.DB_PSWD,
@@ -232,13 +146,13 @@ def search_by_title(recipe_name: str):
         like_pattern = '%{}%'.format(recipe_name)
         cursor.execute(postgres_search_query,(like_pattern,))
         recipe_id_list = cursor.fetchall()
-        print("Line 194")
+
 
         for recipe_id in recipe_id_list:
             postgres_search_query = "SELECT TITLE, TOTAL_TIME, IMG_LINK, RATING FROM recipe_table WHERE RECIPE_ID=%s;"
             cursor.execute(postgres_search_query,(recipe_id,))
             ret = cursor.fetchall()
-            print(ret)
+
             json_map = {}
             json_map['title'] = ret[0][0]
             json_map['total_time'] = ret[0][1]
@@ -246,19 +160,18 @@ def search_by_title(recipe_name: str):
             json_map['rating'] = ret[0][3]
             json_map['recipe_id'] = recipe_id[0]
             json_list.append(json_map)
-            print("Line 207")
+
         return json_list
 
     except (Exception, psycopg2.Error) as error :
         if(connection):
-            print("fuuuuck kfkkkfkf", error)
+            print("Search by Title Failed", error)
 
     finally:
         #closing database connection.
         if(connection):
             cursor.close()
             connection.close()
-            print("PostgreSQL connection is closed")
 
 def search_by_ingredients(list_of_ingredients: list):
     connection = ""
@@ -277,63 +190,36 @@ def search_by_ingredients(list_of_ingredients: list):
 
         cursor.execute(postgres_search_query, tuple(list_of_ingredients))
         recipe_id_list = cursor.fetchall()
-        print("fvgvlwiugear;ugawer;oghwr;OGHWER;OGHWQER;OGHWROIGHWRQOGHWQROGHWERQ'OIGWREA")
-        print(recipe_id_list)
 
         for recipe_id in recipe_id_list:
             postgres_search_query = "SELECT TITLE, TOTAL_TIME, IMG_LINK, RATING FROM recipe_table WHERE RECIPE_ID=%s;"
             cursor.execute(postgres_search_query,(recipe_id,))
             ret = cursor.fetchall()
-            print(ret)
+
             json_map = {}
             json_map['title'] = ret[0][0]
             json_map['total_time'] = ret[0][1]
             json_map['img_link'] = ret[0][2]
             json_map['rating'] = ret[0][3]
             json_map['recipe_id'] = recipe_id[0]
-            print("OGHEAROUHGAERW;GERA;OGHAEROIGHAER;OGHAEROGAHEROGIEARHG'OIAERHG")
-            print(recipe_id)
-            print(type(recipe_id))
+
             json_list.append(json_map)
         return json_list
 
     except (Exception, psycopg2.Error) as error :
         if(connection):
-            print("fuuuuck kfkkkfkf", error)
+            print("Search by Ingredients Failed", error)
 
     finally:
         #closing database connection.
         if(connection):
             cursor.close()
             connection.close()
-            print("PostgreSQL connection is closed")
-        #Tomato,Potato, Carrot, Water, Milk
 
 def get_full_recipe(recipe_id: int):
     connection = ""
     ingredients = ""
     recipe = ""
-    # try:
-    #     connection = psycopg2.connect(user = constants.DB_USER,
-    #                                     password = constants.DB_PSWD,
-    #                                     host = constants.DB_HOST,
-    #                                     port = constants.DB_PORT,
-    #                                     database = constants.DB_NAME)
-    #     cursor = connection.cursor()
-
-    #     postgres_search_query = "SELECT INGREDIENT FROM ingredient_table WHERE RECIPE_ID=%s;"
-    #     cursor.execute(postgres_search_query, (recipe_id,))
-
-    #     ingredients = cursor.fetchall()
-
-
-    #     print("Succefully retrieved all Ingredients. Printing them now \n\n")
-    #     print(ingredients)
-    #     print("\n\n")
-
-    # except (Exception, psycopg2.Error) as error :
-    #     if(connection):
-    #         print("fuuuuck kfkkkfkf", error)
     
     try:
         connection = psycopg2.connect(user = constants.DB_USER,
@@ -347,15 +233,11 @@ def get_full_recipe(recipe_id: int):
         cursor.execute(postgres_search_query, (recipe_id,))
 
         recipe = cursor.fetchall()
-
-
-        print("Succefully retrieved the recipe's details. Printing them now \n\n")
-        print(recipe)
         print("\n\n")
 
     except (Exception, psycopg2.Error) as error :
         if(connection):
-            print("fuuuuck kfkkkfkf", error)
+            print("Accessing the full recipe failed", error)
 
 
     finally:
@@ -363,13 +245,8 @@ def get_full_recipe(recipe_id: int):
         if(connection):
             cursor.close()
             connection.close()
-            print("PostgreSQL connection is closed")
     
     recipe_map = {}
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
-    print(recipe[0])
-    #print("gahioawrhowRHG'OIWARHG'OIWERAHG'EAWROHGwroihgwrghrpwgvhirghRIWGH'AWERIGHWRAGwrighaegbaegjb'seriojgaewrghnveargvbha;e/roigvhaerwolighneoa;rihbg")
-    #print(ingredients[1][0])
 
     recipe_map['recipe_id'] = recipe_id
     recipe_map['title'] = recipe[0][1]
@@ -392,7 +269,6 @@ def get_full_recipe(recipe_id: int):
     recipe_map['num_of_ingredients'] = recipe[0][18]
     recipe_map['level'] = recipe[0][19]
 
-    print(recipe_map)
     return recipe_map
 
 
@@ -411,7 +287,6 @@ def delete_recipe(recipe_id: int):
         ret = cursor.fetchall()
 
         if ret[0]:
-            print(ret[0])
             dml = "DELETE FROM recipe_table WHERE RECIPE_ID=%s;"
             cursor.execute(dml,(recipe_id,))
             
@@ -420,12 +295,11 @@ def delete_recipe(recipe_id: int):
 
             connection.commit()
             string = "Successfully deleted recipe " + str(ret[0]) + " from Database."
-            print(string)
         else:
-            print("ur recipe don't exist my guy u done fucked up")
+            print("This recipe does not exist, please try again with a valid recipe.")
     except (Exception, psycopg2.Error) as error :
-        string = "Recipe: " + str(ret[0]) + " was not succesfully deleted."
-        print("", error)
+        string = "Recipe: " + str(recipe_id) + " was not succesfully deleted."
+        print(string, error)
     return True
 
 def edit_recipe(edits: dict):
@@ -440,20 +314,7 @@ def edit_recipe(edits: dict):
         recipe_id = edits["recipe_id"]
         #Typecasting each of the changed arguments from the edits dictionary
         for val in edits:
-            # val = val[1:-1]
-            # edits[val] = edits[val][1:-1]
-            print(f"Val is", val)
-            print(f"edits[val] is", edits[val])
-            print(f"edits is", edits)
-            if val == "ingredients" or val == "ingredient_tags":
-                query = 'UPDATE recipe_table SET {} = %s WHERE recipe_id = %s;'
-                cursor.execute(sql.SQL(query).format(sql.Identifier(val)),[edits[val],recipe_id])
-
-                dml = "DELETE FROM ingredient_search_table WHERE RECIPE_ID=%s;"
-                cursor.execute(dml, (recipe_id,))
-
-                insert_into_ingredient_search_table(edits["ingredient_tags"], recipe_id)
-            elif val == "calories" or val == "num_ingredients":
+            if val == "calories" or val == "num_ingredients":
                 query = 'UPDATE recipe_table SET {} = %s WHERE recipe_id = %s;'
                 cursor.execute(sql.SQL(query).format(sql.Identifier(val)),[int(edits[val]),recipe_id])
             elif val == "rating":
@@ -463,12 +324,18 @@ def edit_recipe(edits: dict):
                 # {} ONLY FOR SQL IDENTIFIERS
                 # %s ONLY FOR VALUES
                 query = 'UPDATE recipe_table SET {} = %s WHERE recipe_id = %s;'
-                #cursor.execute(query, (val,str(edits[val]),int(recipe_id)))
                 cursor.execute(sql.SQL(query).format(sql.Identifier(val)),[edits[val],recipe_id])
+
+                if val == "ingredients" or val == "ingredient_tags":
+                    dml = "DELETE FROM ingredient_search_table WHERE RECIPE_ID=%s;"
+                    cursor.execute(dml, (recipe_id,))
+                    
+                    insert_into_ingredient_search_table(edits["ingredient_tags"], recipe_id)
+                    
             connection.commit()
+
     except (Exception, psycopg2.DatabaseError) as error:
-        print("Ya done fucked up tryna edit the recipe g", error)
-    print("after exception")
+        print("Edit Recipe Failed for recipe_id ", recipe_id, ". Error:", error)
     return True
 
 def insert_into_ingredient_search_table(ingredient_tags: list, recipe_id: int):
@@ -487,15 +354,11 @@ def insert_into_ingredient_search_table(ingredient_tags: list, recipe_id: int):
                     cursor.execute(postgres_insert_query,record_to_insert)
                     connection.commit()
                     string = ingredient + " was successfully inserted into ingredient table"
-                    print(string)
                 except (Exception, psycopg2.Error) as error :
                     if(connection):
                         print("Failed to insert ingredient into ingredient_search_table", error)
     except (Exception, psycopg2.DatabaseError) as error:
-        print("Ya done fucked up somewhere when inserting ingedients into hte Ingredient Search Table", error)
-    print("after exception")
-
-
+        print("Insertion of recipe ", recipe_id, " into the Ingredient Search Table has failed. Error:", error)
 
 
 def drop():
@@ -519,13 +382,11 @@ def drop():
         cursor.execute("GRANT ALL ON SCHEMA public TO public;")
         connection.commit()
     except (Exception, psycopg2.DatabaseError) as error :
-        print ("Ya done fucked up", error)
-    print("MADE IT OUT OF DROP")
+        print ("Deleting database failed", error)
 
 
 def main():
     #Only call this if you need to set up a db for the very first time
-    print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&IN MAIN FUNCTION&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     drop()
     setup()
     recipe = {
@@ -591,23 +452,22 @@ def main():
     insert(recipe)
     insert(recipe1)
     insert(recipe3)
-    print("\n\n\n SEARCH 1 \n")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++SEARCH 1+++++++++++++++++++++++++++++++++++ \n")
     search_by_ingredients(["olIve oIl"])
-    print("\n\n\n SEARCH 2 \n")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++SEARCH 2+++++++++++++++++++++++++++++++++++ \n")
     search_by_ingredients(["sPiCes"])
-    print("\n\n\n SEARCH 3 \n")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++SEARCH 3+++++++++++++++++++++++++++++++++++ \n")
     search_by_ingredients(["sPiCes","Water"])
-    print("\n\n\n SEARCH Recipe 1 \n")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++SEARCH Recipe 1+++++++++++++++++++++++++++++++++++\n")
     get_full_recipe(1)
-    print("\n\n\n SEARCH Title 2 \n")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++SEARCH Title Miso+++++++++++++++++++++++++++++++++++ \n")
     search_by_title("Miso")
-    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++Test Deletion of Recipe 2+++++++++++++++++++++++++++++++++++ \n")
     delete_recipe(2)
-    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++Search Title Miso+++++++++++++++++++++++++++++++++++ \n")
     search_by_title("Miso")
-    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    print("\n\n\n+++++++++++++++++++++++++++++++++++Get Full Recipe 1+++++++++++++++++++++++++++++++++++")
     get_full_recipe(1)
 
 if __name__ == "__main__":
     main()
-
