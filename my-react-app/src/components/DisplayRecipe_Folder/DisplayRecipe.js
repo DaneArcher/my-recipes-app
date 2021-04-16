@@ -8,28 +8,7 @@ class DisplayRecipe extends Component{
         delete_button: null
     }
     componentDidMount(){
-        /*
-        console.log('component did mount')
-        let recipe = {
-            title: 'Sun-Dried Romatoes',
-            author: 'Cuoredicioccolato',
-            src: 'YouTube',
-            quick_description: 'Tasty home made Italian sun dried tomatoes! testing....... Tasty home made Italian sun dried tomatoes! testing....... Tasty home made Italian sun dried tomatoes! testing.......................................................................................................................................................................................................',
-            total_time: '7 Days',
-            prep_time: '30 minutes',
-            cook_time: '7 Days',
-            rating: '4/5',
-            servings: '25',
-            calories: '100',
-            ingredients: ['25 Roma Tomatoes','1 Quarte Olive Oil','1 Clove of Garlic','2 tablespoons of Spicesssssssssssssssssssssssssssssssssssssssss'],
-            ingredient_tags: ['Roma Tomatoes','Olive Oil', 'Garlic','Spices'],
-            directions: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
-            chef_notes: 'you can also do them in an oven at 125 f',
-            url: 'https://www.youtube.com/watch?v=5yTWGjPdj-g',
-            img_link: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg'
-        }
-        this.setState({recipe})
-        *//*
+/*
         Case 1: Recipe ID is in parms and location state is null signifing do a fetch (URL is:/DisplayRecipe/:ID )
                 -if fetch was a success display recipe else display no such recipe exists
                 -on refresh check gloabel state. does this make case 2 redundent
@@ -37,37 +16,20 @@ class DisplayRecipe extends Component{
         Case 3: Full Recipe is sent through as a prop signifying that DisplayRecipe is being called as a chilled component in someother component set state equal to props.recipe
         Case 4: Error Something went wrong do something
         */
-        console.log(this.props)
-        //let recipe_id = this.props.match.params.recipe_id
-        //let temp = this.props.match.params.temp 
         let recipe = this.props.recipe
-        //console.log(temp)
-        console.log(this.props.recipe)
-        console.log(recipe)
-        //let recipe = this.props.location.state.recipe
-        console.log(recipe !== undefined)
         if(recipe !== undefined){
-            //make sure it's not recipe.recipe
             this.setState({
                 recipe: this.props.recipe
             })
         }
-        else{              //if(recipe_id !== null){
-            console.log("inside else")
-            //fetch from db                                   && recipe === null
-            //display if recipe exist or say recipe does not exist
-            //send recipe to the global state
-            /*if this sends somthing to the global state and we still have to check the global state in this are to
-            prevent unwanted fetches then case 2 is not needed*/
+        else{//if(recipe_id !== null) // fetch from db or from global cache
+            
             let recipe_id = this.props.match.params.recipe_id
-
-            let link = 'http://localhost:5000/full_recipe?recipe_id='
-            // let recipe_id = this.props.recipe_id        
+            let link = 'http://localhost:5000/full_recipe?recipe_id='        
             link = link.concat(recipe_id)
-            let editR = '/edit/'
-            editR = editR.concat(this.props.match.params.recipe_id)
-            // let deleteR = "/delete/"
-            // deleteR = deleteR.concat(this.props.match.params.recipe_id)
+            
+            let editR = '/edit/' // for flask
+            editR = editR.concat(recipe_id)
 
             fetch(link)
             .then(response => response.json())
@@ -77,72 +39,26 @@ class DisplayRecipe extends Component{
                 this.setState({
                     recipe: data.recipe,
                     edit_button: <button onClick= {()=>{this.props.history.push(editR,{recipe: this.state.recipe})}}>Edit Recipe</button>,
-                    delete_button: <button onClick= {()=>{
-
-                       
-                        fetch('http://localhost:5000/delete', {
-                            method: 'POST', // or 'PUT'
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(recipe_id),
-                            }).then(response => response.text())
-                            .then(text => {
-                                console.log(text)
-                                console.log("HELP")
-                                if(text === "response is good"){
-                                    this.props.history.push("/",{recipe_id: recipe_id})
-                                }
-                        })		 
-                    }}>Delete Recipe</button>,
+                    //deleteRecipe does not need to be wrapped in curly braces
+                    delete_button: <button onClick= {()=>this.deleteRecipe(recipe_id)}>Delete Recipe</button>,
 
                 })
             })
         }
-        //the full recipe was passed through location state
-        //this should never activate until we create a global state
-        // else if (recipe !== null){
-        //     this.setState({
-        //         recipe: recipe
-        //     })
-        // }
-        // //rendering component inside another and not changing the url
-        // else if(this.props.recipe !== null){
-        //     this.setState({
-        //         recipe: this.props.recipe
-        //     })
-        // }
-        // else{
-        //     //something went wrong do some sort of error
-        // }
-
-
-        /*
-        if(this.props.id !== null){        
-            let link = 'http://localhost:5000/full_recipe?recipe_id='
-            let recipe_id = this.props.recipe_id        
-            link = link.concat(recipe_id)
-
-            fetch(link)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                console.log(data.recipe)
-                this.setState({
-                    recipe: data.recipe
-                })
-            })
-        }
-        else if(this.props.recipe !== null){
-            //make sure it's not recipe.recipe
-            this.setState({
-                recipe: this.props.recipe
-            })
-        }
-        else{
-            //ERROR you did not pass any props to this componite give error
-        }
-        */
+    }
+    deleteRecipe = (recipe_id) =>{
+        fetch('http://localhost:5000/delete', {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(recipe_id),
+            }).then(response => response.text())
+            .then(text => {
+                if(text === "response is good"){
+                    this.props.history.push("/",{recipe_id: recipe_id})
+                }
+            })        
     }
     checkRecipe = () =>{
         let packaged_data = {}
@@ -261,3 +177,23 @@ class DisplayRecipe extends Component{
     }
 }
 export default DisplayRecipe
+/*
+let recipe = {
+    title: 'Sun-Dried Romatoes',
+    author: 'Cuoredicioccolato',
+    src: 'YouTube',
+    quick_description: 'Tasty home made Italian sun dried tomatoes! testing....... Tasty home made Italian sun dried tomatoes! testing....... Tasty home made Italian sun dried tomatoes! testing.......................................................................................................................................................................................................',
+    total_time: '7 Days',
+    prep_time: '30 minutes',
+    cook_time: '7 Days',
+    rating: '4/5',
+    servings: '25',
+    calories: '100',
+    ingredients: ['25 Roma Tomatoes','1 Quarte Olive Oil','1 Clove of Garlic','2 tablespoons of Spicesssssssssssssssssssssssssssssssssssssssss'],
+    ingredient_tags: ['Roma Tomatoes','Olive Oil', 'Garlic','Spices'],
+    directions: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+    chef_notes: 'you can also do them in an oven at 125 f',
+    url: 'https://www.youtube.com/watch?v=5yTWGjPdj-g',
+    img_link: 'https://food.fnr.sndimg.com/content/dam/images/food/fullset/2020/10/14/0/FNK_SLOW_COOKER_HOT_CHOCOLATE_H_f_s4x3.jpg.rend.hgtvcom.826.620.suffix/1602696813966.jpeg'
+}
+*/
