@@ -87,14 +87,6 @@ class AddRecipe extends Component{
 					[key]: data[key]
 				})
 			}
-			/*
-			this.setState({
-				directions: data.directions,
-				title: data.title,
-				ingredients: data.ingredients,
-				img_link: data.img_link
-			})
-			*/
 			//keeping ingredient tags same length as ingredients
 			let len = data.ingredients.length
 			for(let i = 0; i < len; i++){
@@ -103,21 +95,15 @@ class AddRecipe extends Component{
 					ingredient_tags
 				  })
 			}
-			//.then(()=>{this.nextSection()})
-            //should nextStep be in .then our outside?
-            console.log(this.state)
 			this.nextStep()
 		})
     }
     parsedIngr = (e, index) =>{
-		//console.log('hello') 
 		let {ingredient_tags} = this.state
 		ingredient_tags[index] = e.target.value
 		this.setState({
 			ingredient_tags
 		})
-		//console.log(this.state.ingredients)
-		//console.log(this.state.ingredient_tags)
      }
 	 submitRecipe = () =>{
         let copyState = {}
@@ -133,7 +119,6 @@ class AddRecipe extends Component{
           body: JSON.stringify(copyState),
         }).then(response => response.text())
         .then(text => {
-            //console.log(text)
             if(text === "response is good"){
                this.setState({step: step + 1})
             }
@@ -141,7 +126,6 @@ class AddRecipe extends Component{
     }
     render(){
         let {step} = this.state
-        //console.log(this.props)
         switch(step){
             case 1:
                 return(
