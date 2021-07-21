@@ -17,6 +17,7 @@ class NavBar extends Component{
                 <ul className={this.state.clicked ? 'nav-menu active' : 'nav-menu'}>
                     <li><Link className='nav-links' to='/'>Home</Link></li>
                     <li><Link className='nav-links' to='/add'>Add</Link></li>
+                    <li>{this.props.isLoggedIn ? <button onClick={this.props.logout}>Logout</button> : <button onClick={this.props.lwp}>Login</button>} </li>
                 </ul>
             </nav>
         )
