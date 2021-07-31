@@ -5,6 +5,7 @@ from psycopg2 import sql
 
 def setup():
     connection = "      "
+    ## GLOBAL TABLES ##
     try:
         # this initial connection should be in its own try except
         connection = psycopg2.connect(user = constants.DB_USER,
@@ -15,76 +16,163 @@ def setup():
 
         cursor = connection.cursor()
         
-        create_table_query = '''CREATE TABLE recipe_table
-            (RECIPE_ID SERIAL PRIMARY KEY     NOT NULL,
-            TITLE           TEXT    ,
-            INGREDIENTS      TEXT[]  ,
-            INGREDIENT_TAGS TEXT[] ,
-            DIRECTIONS      TEXT    ,
-            IMG_LINK        TEXT    ,
-            PREP_TIME       TEXT    ,
-            TOTAL_TIME      TEXT    ,
-            COOK_TIME       TEXT    ,
-            INACTIVE_TIME   TEXT    ,
-            CALORIES        INT     ,
-            RATING          FLOAT   ,
-            SERVINGS        TEXT    ,
-            AUTHOR          TEXT    ,
-            SOURCE          TEXT    ,
-            QUICK_DESCRIPTION TEXT  ,
-            CHEF_NOTES      TEXT    ,
-            SOURCE_URL      TEXT    ,
-            NUM_INGREDIENTS INT     ,
-            LEVEL      TEXT); '''
+        create_table_query = '''CREATE TABLE global_recipe_table
+            (recipe_id SERIAL PRIMARY KEY     NOT NULL,
+            title           TEXT    ,
+            ingredients      TEXT[] ,
+            ingredient_tags TEXT[]  ,
+            directions      TEXT    ,
+            img_link        TEXT    ,
+            prep_time       TEXT    ,
+            total_time      TEXT    ,
+            cook_time       TEXT    ,
+            inactive_time   TEXT    ,
+            calories        INT     ,
+            rating          FLOAT   ,
+            servings        TEXT    ,
+            author          TEXT    ,
+            source          TEXT    ,
+            quick_description TEXT  ,
+            chef_notes      TEXT    ,
+            source_URL      TEXT    ,
+            num_ingredients INT     ,
+            level           TEXT    ,
+            user_id         TEXT); '''
         
         cursor.execute(create_table_query) # git equivlent to add
         connection.commit() # git euivelent to commit plus push
-        print("Recipe Table created successfully in PostgreSQL ")
+        print("Global Recipe Table created successfully in PostgreSQL ")
 
     except (Exception, psycopg2.DatabaseError) as error :
-        print ("Error while creating recipe_table", error)
+        print ("Error while creating global_recipe_table", error)
+    
 
+    # Global ingredient table creation
     try:
         #you don't have to keep doing connection.cursor
         cursor = connection.cursor()
 
-        create_table_query = '''CREATE TABLE ingredient_search_table
+        create_table_query = '''CREATE TABLE global_ingredient_search_table
         (
-            RECIPE_ID INT NOT NULL,
-            INGREDIENT TEXT NOT NULL
+            recipe_id INT NOT NULL,
+            ingredient TEXT NOT NULL
         ); '''
         cursor.execute(create_table_query)
         connection.commit()
-        print("Ingredient Search Table created succesffully in PostegreSQL")
+        print("Global Ingredient Search Table created succesffully in PostegreSQL")
 
 
     except (Exception, psycopg2.DatabaseError) as error :
-        print ("Error while creating ingredient_search_table", error)
+        print ("Error while creating global_ingredient_search_table", error)
 
+    # global recipe title index
     try:
         cursor = connection.cursor()
 
-        create_index_query = '''CREATE INDEX recipe_title_index ON recipe_table (TITLE);'''
+        create_index_query = '''CREATE INDEX global_recipe_title_index ON global_recipe_table (title);'''
         cursor.execute(create_index_query)
         connection.commit()
-        print("Recipe Title Index created succesfully in PostegreSQL")
+        print("Global Recipe Title Index created succesfully in PostegreSQL")
 
 
     except (Exception, psycopg2.DatabaseError) as error :
-        print ("Error while creating Recipe Title Index", error)
+        print ("Error while creating Global Recipe Title Index", error)
 
+    # Global recipe ingredient index
     try:
         cursor = connection.cursor()
 
-        create_index_query = '''CREATE INDEX parsed_ingredient_index ON ingredient_search_table (INGREDIENT);'''
+        create_index_query = '''CREATE INDEX global_parsed_ingredient_index ON global_ingredient_search_table (ingredient);'''
         cursor.execute(create_index_query)
         connection.commit()
-        print("Parsed Ingredient Index created succesfully in PostegreSQL")
+        print("Global Parsed Ingredient Index created succesfully in PostegreSQL")
 
 
     except (Exception, psycopg2.DatabaseError) as error :
-        print ("Error while creating Parsed Ingredient Index ", error)
+        print ("Error while creating Global Parsed Ingredient Index ", error)
+    ## Global TABLES - END ##
+    
+    ## USER TABLES ##
 
+    # user recipe table creation
+    try:
+        cursor = connection.cursor()
+        create_table_query = '''CREATE TABLE user_recipe_table
+            (recipe_id SERIAL PRIMARY KEY     NOT NULL,
+            title           TEXT    ,
+            ingredients      TEXT[] ,
+            ingredient_tags TEXT[]  ,
+            directions      TEXT    ,
+            img_link        TEXT    ,
+            prep_time       TEXT    ,
+            total_time      TEXT    ,
+            cook_time       TEXT    ,
+            inactive_time   TEXT    ,
+            calories        INT     ,
+            rating          FLOAT   ,
+            servings        TEXT    ,
+            author          TEXT    ,
+            source          TEXT    ,
+            quick_description TEXT  ,
+            chef_notes      TEXT    ,
+            source_URL      TEXT    ,
+            num_ingredients INT     ,
+            level           TEXT    ,
+            user_id         TEXT); '''
+            #user_id needs to be NOT NULL change later
+        
+        cursor.execute(create_table_query) # git equivlent to add
+        connection.commit() # git euivelent to commit plus push
+        print("User Recipe Table created successfully in PostgreSQL ")
+
+    except (Exception, psycopg2.DatabaseError) as error :
+        print ("Error while creating user_recipe_table", error)
+
+    # user ingredient table creation
+    try:
+        #you don't have to keep doing connection.cursor
+        cursor = connection.cursor()
+
+        create_table_query = '''CREATE TABLE user_ingredient_search_table
+        (
+            recipe_id INT NOT NULL,
+            ingredient TEXT NOT NULL,
+            user_id TEXT NOT NULL
+        ); '''
+        cursor.execute(create_table_query)
+        connection.commit()
+        print("User Ingredient Search Table created succesffully in PostegreSQL")
+
+
+    except (Exception, psycopg2.DatabaseError) as error :
+        print ("Error while creating user_ingredient_search_table", error)
+
+    # user recipe title index
+    try:
+        cursor = connection.cursor()
+
+        create_index_query = '''CREATE INDEX user_recipe_title_index ON user_recipe_table (title, user_id);'''
+        cursor.execute(create_index_query)
+        connection.commit()
+        print("User Recipe Title Index created succesfully in PostegreSQL")
+
+
+    except (Exception, psycopg2.DatabaseError) as error :
+        print ("Error while creating User Recipe Title Index", error)
+
+    # user recipe ingredient index
+    try:
+        cursor = connection.cursor()
+
+        create_index_query = '''CREATE INDEX user_parsed_ingredient_index ON user_ingredient_search_table (ingredient, user_id);'''
+        cursor.execute(create_index_query)
+        connection.commit()
+        print("User Parsed Ingredient Index created succesfully in PostegreSQL")
+
+    except (Exception, psycopg2.DatabaseError) as error :
+        print ("Error while creating User Parsed Ingredient Index ", error)
+    
+    ## USER TABLES - END##
 
     finally:
         #closing database connection.
@@ -92,12 +180,13 @@ def setup():
                 cursor.close()
                 connection.close()
 
-
-def insert(recipe: dict) -> bool:
+#TODO fix later
+def insert(recipe: dict, user_id: str = None) -> bool:
     ingredient_tags = recipe['ingredient_tags']
     ingredient_list = recipe['ingredients']
     connection = 0
     recipe_id = 0
+    table_name = "user_recipe_table" if user_id else "global_recipe_table"
     try:
         connection = psycopg2.connect(user = constants.DB_USER,
                                         password = constants.DB_PSWD,
@@ -106,11 +195,11 @@ def insert(recipe: dict) -> bool:
                                         database = constants.DB_NAME)
         cursor = connection.cursor()
 
-        postgres_insert_query = """ INSERT INTO recipe_table 
-                                    (TITLE, INGREDIENTS, INGREDIENT_TAGS, DIRECTIONS, IMG_LINK, PREP_TIME, TOTAL_TIME, COOK_TIME, INACTIVE_TIME, CALORIES, 
-                                    RATING, SERVINGS, AUTHOR, SOURCE, QUICK_DESCRIPTION, CHEF_NOTES, SOURCE_URL, NUM_INGREDIENTS, LEVEL) 
-                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING RECIPE_ID;"""
-        record_to_insert = (recipe['title'], ingredient_list, ingredient_tags, recipe['directions'], recipe['img_link'], recipe['prep_time'], recipe['total_time'], recipe['cook_time'], recipe['inactive_time'], int(recipe['calories']), float(recipe['rating']), recipe['servings'], recipe['author'], recipe['src'], recipe['quick_description'],recipe['chef_notes'], recipe['url'], len(ingredient_list), recipe['level'])
+        postgres_insert_query = """ INSERT INTO %s 
+                                    (title, ingredients, ingredient_tags, directions, img_link, prep_time, total_time, cook_time, inactive_time, calories, 
+                                    rating, servings, author, source, quick_description, chef_notes, source_URL, num_ingredients, level, user_id) 
+                                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING recipe_id;"""
+        record_to_insert = (table_name, recipe['title'], ingredient_list, ingredient_tags, recipe['directions'], recipe['img_link'], recipe['prep_time'], recipe['total_time'], recipe['cook_time'], recipe['inactive_time'], int(recipe['calories']), float(recipe['rating']), recipe['servings'], recipe['author'], recipe['src'], recipe['quick_description'],recipe['chef_notes'], recipe['url'], len(ingredient_list), recipe['level'], user_id)
 
         # is this thread safe
         cursor.execute(postgres_insert_query, record_to_insert)
@@ -119,7 +208,10 @@ def insert(recipe: dict) -> bool:
         connection.commit()
         #
         print (recipe_id, "Record inserted successfully into recipe table")
-        insert_into_ingredient_search_table(ingredient_tags, recipe_id)
+        if (table_name == 'global_recipe_table'):
+            insert_into_global_ingredient_search_table(ingredient_tags, recipe_id)
+        else:#user_recipe_table
+            insert_into_user_ingredient_search_table(ingredient_tags, recipe_id, user_id)
 
     except (Exception, psycopg2.Error) as error :
         if(connection):
@@ -133,8 +225,8 @@ def insert(recipe: dict) -> bool:
             connection.close()
     return True
 
-
-def search_by_title(recipe_name: str):
+#add pagination
+def search_by_title(recipe_name: str, user_id:str = None):
     connection = ""
     json_list = []
 
@@ -146,14 +238,24 @@ def search_by_title(recipe_name: str):
                                         database = constants.DB_NAME)
         cursor = connection.cursor()
 
-        postgres_search_query = "SELECT RECIPE_ID FROM recipe_table WHERE LOWER(TITLE) LIKE LOWER(%s);"
+        user_recipe_query="SELECT recipe_id FROM user_recipe_table WHERE user_id=%s AND LOWER(title) LIKE LOWER(%s);"
+        global_recipe_query = "SELECT recipe_id FROM global_recipe_table WHERE LOWER(title) LIKE LOWER(%s);"
+
+        postgres_search_query = user_recipe_query if user_id else global_recipe_query
+        
+        #postgres_search_query = "SELECT recipe_id FROM global_recipe_table WHERE LOWER(title) LIKE LOWER(%s);"
         like_pattern = '%{}%'.format(recipe_name)
-        cursor.execute(postgres_search_query,(like_pattern,))
+        if user_id:
+            cursor.execute(postgres_search_query,(user_id, like_pattern,))
+        
+        else:
+            cursor.execute(postgres_search_query,(like_pattern,))
+
         recipe_id_list = cursor.fetchall()
 
 
         for recipe_id in recipe_id_list:
-            postgres_search_query = "SELECT TITLE, TOTAL_TIME, IMG_LINK, RATING FROM recipe_table WHERE RECIPE_ID=%s;"
+            postgres_search_query = "SELECT title, total_time, img_link, rating FROM global_recipe_table WHERE recipe_id=%s;"
             cursor.execute(postgres_search_query,(recipe_id,)) #figure out why?
             ret = cursor.fetchall()
 
@@ -176,8 +278,8 @@ def search_by_title(recipe_name: str):
         if(connection):
             cursor.close()
             connection.close()
-
-def search_by_ingredients(list_of_ingredients: list):
+#add pagination
+def search_by_ingredients(list_of_ingredients: list, user_id:str = None):
     connection = ""
     json_list = []
     try:
@@ -189,14 +291,19 @@ def search_by_ingredients(list_of_ingredients: list):
         cursor = connection.cursor()
         length = len(list_of_ingredients)
 
-        postgres_search_query = (length-1) * "SELECT RECIPE_ID FROM ingredient_search_table WHERE LOWER(INGREDIENT)=LOWER(%s) INTERSECT " #PYTHON BITCH!!!!
-        postgres_search_query += "SELECT RECIPE_ID FROM ingredient_search_table WHERE LOWER(INGREDIENT)=LOWER(%s);"
+        if user_id:
+            postgres_search_query = (length-1) * ("SELECT recipe_id FROM user_ingredient_search_table WHERE user_id="+ user_id +" AND LOWER(ingredient)=LOWER(%s) INTERSECT ") #PYTHON BITCH!!!!
+            postgres_search_query += "SELECT recipe_id FROM user_ingredient_search_table WHERE user_id="+ user_id +" AND LOWER(ingredient)=LOWER(%s);"
+        
+        else:
+            postgres_search_query = (length-1) * "SELECT recipe_id FROM global_ingredient_search_table WHERE LOWER(ingredient)=LOWER(%s) INTERSECT " #PYTHON BITCH!!!!
+            postgres_search_query += "SELECT recipe_id FROM global_ingredient_search_table WHERE LOWER(ingredient)=LOWER(%s);"
 
         cursor.execute(postgres_search_query, tuple(list_of_ingredients))
         recipe_id_list = cursor.fetchall()
 
         for recipe_id in recipe_id_list:
-            postgres_search_query = "SELECT TITLE, TOTAL_TIME, IMG_LINK, RATING FROM recipe_table WHERE RECIPE_ID=%s;"
+            postgres_search_query = "SELECT title, total_time, img_link, rating FROM global_recipe_table WHERE recipe_id=%s;"
             cursor.execute(postgres_search_query,(recipe_id,))
             ret = cursor.fetchall()
 
@@ -220,7 +327,7 @@ def search_by_ingredients(list_of_ingredients: list):
             cursor.close()
             connection.close()
 
-def get_full_recipe(recipe_id: int):
+def get_full_recipe(recipe_id: int, user_id: str = None):
     connection = ""
     ingredients = ""
     recipe = ""
@@ -233,8 +340,8 @@ def get_full_recipe(recipe_id: int):
                                         database = constants.DB_NAME)
         cursor = connection.cursor()
 
-        postgres_search_query = "SELECT * FROM recipe_table WHERE RECIPE_ID=%s;"
-        cursor.execute(postgres_search_query, (recipe_id,))
+        postgres_search_query = "SELECT * FROM %s WHERE recipe_id=%s;"
+        cursor.execute(postgres_search_query, ("user_recipe_table", recipe_id,)) if user_id else cursor.execute(postgres_search_query, ("global_recipe_table", recipe_id,))
 
         recipe = cursor.fetchall()
         print("\n\n")
@@ -285,16 +392,16 @@ def delete_recipe(recipe_id: int):
                                         database = constants.DB_NAME)
         cursor = connection.cursor()
 
-        query = "SELECT TITLE FROM recipe_table WHERE RECIPE_ID=%s"
+        query = "SELECT title FROM global_recipe_table WHERE recipe_id=%s"
         cursor.execute(query,(recipe_id,))
         connection.commit()
         ret = cursor.fetchall()
 
         if ret[0]:
-            dml = "DELETE FROM recipe_table WHERE RECIPE_ID=%s;"
+            dml = "DELETE FROM global_recipe_table WHERE recipe_id=%s;"
             cursor.execute(dml,(recipe_id,))
             
-            dml = "DELETE FROM ingredient_search_table WHERE RECIPE_ID=%s;"
+            dml = "DELETE FROM global_ingredient_search_table WHERE recipe_id=%s;"
             cursor.execute(dml, (recipe_id,))
 
             connection.commit()
@@ -324,22 +431,22 @@ def edit_recipe(edits: dict):
         #Typecasting each of the changed arguments from the edits dictionary
         for val in edits:
             if val == "calories" or val == "num_ingredients":
-                query = 'UPDATE recipe_table SET {} = %s WHERE recipe_id = %s;'
+                query = 'UPDATE global_recipe_table SET {} = %s WHERE recipe_id = %s;'
                 cursor.execute(sql.SQL(query).format(sql.Identifier(val)),[int(edits[val]),recipe_id])
             elif val == "rating":
-                query = 'UPDATE recipe_table SET {} = %s WHERE recipe_id = %s;'
+                query = 'UPDATE global_recipe_table SET {} = %s WHERE recipe_id = %s;'
                 cursor.execute(sql.SQL(query).format(sql.Identifier(val)),[float(edits[val]),recipe_id])
             else:
                 # {} ONLY FOR SQL IDENTIFIERS
                 # %s ONLY FOR VALUES
-                query = 'UPDATE recipe_table SET {} = %s WHERE recipe_id = %s;'
+                query = 'UPDATE global_recipe_table SET {} = %s WHERE recipe_id = %s;'
                 cursor.execute(sql.SQL(query).format(sql.Identifier(val)),[edits[val],recipe_id])
 
                 if val == "ingredients" or val == "ingredient_tags":
-                    dml = "DELETE FROM ingredient_search_table WHERE RECIPE_ID=%s;"
+                    dml = "DELETE FROM global_ingredient_search_table WHERE recipe_id=%s;"
                     cursor.execute(dml, (recipe_id,))
                     
-                    insert_into_ingredient_search_table(edits["ingredient_tags"], recipe_id)
+                    insert_into_global_ingredient_search_table(edits["ingredient_tags"], recipe_id)
                     
             connection.commit()
 
@@ -347,7 +454,7 @@ def edit_recipe(edits: dict):
         print("Edit Recipe Failed for recipe_id ", recipe_id, ". Error:", error)
     return True
 
-def insert_into_ingredient_search_table(ingredient_tags: list, recipe_id: int):
+def insert_into_global_ingredient_search_table(ingredient_tags: list, recipe_id: int):
     try:
         connection = psycopg2.connect(user = constants.DB_USER,
                                         password = constants.DB_PSWD,
@@ -358,16 +465,38 @@ def insert_into_ingredient_search_table(ingredient_tags: list, recipe_id: int):
             if ingredient != "":
                 try:
                     cursor = connection.cursor()  
-                    postgres_insert_query = '''INSERT INTO ingredient_search_table (INGREDIENT, RECIPE_ID) VALUES (%s,%s);'''
+                    postgres_insert_query = '''INSERT INTO global_ingredient_search_table (ingredient, recipe_id) VALUES (%s,%s);'''
                     record_to_insert = (ingredient,recipe_id)
                     cursor.execute(postgres_insert_query,record_to_insert)
                     connection.commit()
                     string = ingredient + " was successfully inserted into ingredient table"
                 except (Exception, psycopg2.Error) as error :
                     if(connection):
-                        print("Failed to insert ingredient into ingredient_search_table", error)
+                        print("Failed to insert ingredient into global_ingredient_search_table", error)
     except (Exception, psycopg2.DatabaseError) as error:
         print("Insertion of recipe ", recipe_id, " into the Ingredient Search Table has failed. Error:", error)
+
+def insert_into_user_ingredient_search_table(ingredient_tags: list, recipe_id: int, user_id: str):
+    try:
+        connection = psycopg2.connect(user = constants.DB_USER,
+                                        password = constants.DB_PSWD,
+                                        host = constants.DB_HOST,
+                                        port = constants.DB_PORT,
+                                        database = constants.DB_NAME)
+        for ingredient in ingredient_tags:
+            if ingredient != "":
+                try:
+                    cursor = connection.cursor()  
+                    postgres_insert_query = '''INSERT INTO user_ingredient_search_table (ingredient, recipe_id, user_id) VALUES (%s,%s,%s);'''
+                    record_to_insert = (ingredient,recipe_id,user_id)
+                    cursor.execute(postgres_insert_query,record_to_insert)
+                    connection.commit()
+                    string = ingredient + " was successfully inserted into user ingredient table"
+                except (Exception, psycopg2.Error) as error :
+                    if(connection):
+                        print("Failed to insert ingredient into user_ingredient_search_table", error)
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Insertion of recipe ", recipe_id, " into the User Ingredient Search Table has failed. Error:", error)
 
 
 def drop():
